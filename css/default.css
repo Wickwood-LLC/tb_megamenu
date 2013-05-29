@@ -114,7 +114,7 @@
   color: #eee;
 }
 .tb-megamenu .mega-inner {
-  padding: 20px;
+  padding: 10px;
 }
 .tb-megamenu .row-fluid + .row-fluid {
   border-top: 1px solid #ddd;
@@ -127,15 +127,15 @@
   margin-right: 0;
 }
 .tb-megamenu .tb-block .block-title {
-  font-size: 16px;
+  font-size: 13px;
   color: #222;
   display: block;
   line-height: 20px;
-  margin-bottom: 5px;
+  margin: 0 0 5px;
 }
 .tb-megamenu .tb-block ul,
 .tb-megamenu .tb-block .nav {
-  margin: 0 0 0 15px;
+  margin: 0;
 }
 .tb-megamenu .tb-block ul li,
 .tb-megamenu .tb-block .nav li {
@@ -1581,4 +1581,29 @@
   .tb-megamenu .tb-block {
     margin-bottom: 0;
   }
+}
+
+.block-style-demo .views-field-field-image {
+  float: left;
+}
+
+.block-style-demo .views-field-field-image img {
+  border: 1px solid #ccc;
+  margin: 0 20px 0 0;
+  max-width: none !important;
+  padding: 4px;
+  width: auto;
+}
+
+.block-style-demo .item-list ul li {
+  border-bottom: 1px solid #ccc;
+  margin: 0;
+  min-height: 60px;
+  padding: 10px 0;
+}
+
+.block-style-demo .views-field-title a {
+  border-top: none;
+  color: #444;
+  padding: 0;
 }
