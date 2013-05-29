@@ -1,0 +1,16 @@
+.tb-megamenu .nav li.dropdown.active > .dropdown-toggle,
+.tb-megamenu .nav li.dropdown.open.active > .dropdown-toggle {
+  background-color: #165fa8;
+}
+
+.tb-megamenu .nav > .active > a,
+.tb-megamenu .nav > .active > a:hover,
+.tb-megamenu .nav > .active > a:focus {
+  background-image: -moz-linear-gradient(top,#165fa8,#0857a8);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#165fa8),to(#0857a8));
+  background-image: -webkit-linear-gradient(top,#165fa8,#0857a8);
+  background-image: -o-linear-gradient(top,#165fa8,#0857a8);
+  background-image: linear-gradient(to bottom,#165fa8,#0857a8);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#165fa8ed', endColorstr='#0857a8bb', GradientType=0);
+}

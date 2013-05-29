@@ -1,0 +1,202 @@
+.tb-megamenu {
+  background-color: #363636;
+  background-image: -moz-linear-gradient(top,#444,#222);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#444),to(#222));
+  background-image: -webkit-linear-gradient(top,#444,#222);
+  background-image: -o-linear-gradient(top,#444,#222);
+  background-image: linear-gradient(to bottom,#444,#222);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff444444', endColorstr='#ff222222', GradientType=0); 
+  color: #eee;
+}
+.tb-megamenu .nav > li > a {
+  color: #eee;
+  border-right: 1px solid #444;
+}
+.tb-megamenu .nav > li > a:focus,
+.tb-megamenu .nav > li > a:hover {
+  background-color: #5e5e5e;
+  background-color: #6d6d6d;
+  background-image: -moz-linear-gradient(top,#777777,#5e5e5e);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#777777),to(#5e5e5e));
+  background-image: -webkit-linear-gradient(top,#777777,#5e5e5e);
+  background-image: -o-linear-gradient(top,#777777,#5e5e5e);
+  background-image: linear-gradient(to bottom,#777777,#5e5e5e);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff777777', endColorstr='#ff5d5d5d', GradientType=0);
+}
+.tb-megamenu .nav > .active > a,
+.tb-megamenu .nav > .active > a:hover,
+.tb-megamenu .nav > .active > a:focus {
+  color: #fff;
+  background-color: #41baff;
+  background-image: -moz-linear-gradient(top,#55c1ff,#22afff);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#55c1ff),to(#22afff));
+  background-image: -webkit-linear-gradient(top,#55c1ff,#22afff);
+  background-image: -o-linear-gradient(top,#55c1ff,#22afff);
+  background-image: linear-gradient(to bottom,#55c1ff,#22afff);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff54c1ff', endColorstr='#ff21aeff', GradientType=0);
+}
+.tb-megamenu .nav-collapse .nav > li.active > a:hover, 
+.tb-megamenu .nav-collapse .nav > li.active > a:focus {
+  background-color: #41baff;
+  background-image: -moz-linear-gradient(top,#55c1ff,#22afff);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#55c1ff),to(#22afff));
+  background-image: -webkit-linear-gradient(top,#55c1ff,#22afff);
+  background-image: -o-linear-gradient(top,#55c1ff,#22afff);
+  background-image: linear-gradient(to bottom,#55c1ff,#22afff);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff54c1ff', endColorstr='#ff21aeff', GradientType=0);
+}
+.tb-megamenu .dropdown .caret {
+  margin-left: 5px;
+}
+.tb-megamenu .dropdown-menu {
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+.tb-megamenu .dropdown-menu li > a {
+  border-top: 1px solid #444;
+  padding: 5px 20px;
+  text-shadow: none;
+}
+.tb-megamenu .dropdown-menu li:first-child > a {
+  border-top: 0;
+}
+.tb-megamenu .navbar .nav > li > .dropdown-menu:before {
+  display: none;
+}
+.tb-megamenu .navbar .nav > li > .dropdown-menu:after {
+  display: none;
+}
+.tb-megamenu .dropdown-menu .disabled > a,
+.tb-megamenu .dropdown-menu .disabled > a:hover {
+  color: #999;
+}
+.tb-megamenu .dropdown-menu .disabled > a:hover {
+  background-color: transparent;
+}
+.tb-megamenu .nav li.dropdown.open > .dropdown-toggle {
+  background-color: #666;
+  color: #eee;
+}
+.tb-megamenu .nav li.dropdown.active > .dropdown-toggle,
+.tb-megamenu .nav li.dropdown.open.active > .dropdown-toggle {
+  background-color: #07b;
+  color: #eee;
+}
+.tb-megamenu .dropdown-menu {
+  background-color: #5e5e5e;
+  border: 1px solid #777777;
+}
+.tb-megamenu .dropdown-menu li > a {
+  color: #eee;
+  border-top: 1px solid #777777;
+}
+.tb-megamenu .nav li.dropdown.open > .dropdown-toggle,
+.tb-megamenu .nav li.dropdown.active > .dropdown-toggle,
+.tb-megamenu .nav li.dropdown.open.active > .dropdown-toggle {
+  background-color: #41baff;
+  background-image: -moz-linear-gradient(top,#55c1ff,#22afff);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#55c1ff),to(#22afff));
+  background-image: -webkit-linear-gradient(top,#55c1ff,#22afff);
+  background-image: -o-linear-gradient(top,#55c1ff,#22afff);
+  background-image: linear-gradient(to bottom,#55c1ff,#22afff);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff54c1ff', endColorstr='#ff21aeff', GradientType=0);
+}
+.tb-megamenu .tb-block {
+  background: transparent;
+  color: inherit;
+  margin-bottom: 40px;
+}
+.tb-megamenu .tb-block .block-inner {
+  padding: 0;
+}
+.tb-megamenu .block-title {
+  background: inherit;
+  color: #eee;
+  line-height: 30px;
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+.tb-megamenu .block-ct {
+  background: inherit;
+  color: inherit;
+  padding: 0;
+  *zoom: 1;
+}
+.tb-megamenu .block-ct:before,
+.tb-megamenu .block-ct:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.tb-megamenu .block-ct:after {
+  clear: both;
+}
+.tb-megamenu .tb-block ul,
+.tb-megamenu .tb-block ol {
+  margin-left: 20px;
+}
+.tb-megamenu .tb-block ul.unstyled,
+.tb-megamenu .tb-block ol.unstyled,
+.tb-megamenu .tb-block ul.nav,
+.tb-megamenu .tb-block ol.nav {
+  margin-left: 0;
+}
+.tb-megamenu .block_menu .nav {
+  margin-bottom: 20px;
+}
+.tb-megamenu .block_menu .nav > li {
+  border-top: 1px solid #444;
+}
+.tb-megamenu .block_menu .nav > li > a {
+  padding: 5px;
+}
+.tb-megamenu .block_menu .nav > li:first-child {
+  border-top: 0;
+}
+.tb-megamenu .block_menu .nav > li:first-child > a {
+  padding-top: 0;
+  border-top: 0;
+}
+
+@media (max-width: 767px) {
+.tb-megamenu {
+  background-image: none;
+  background-color: inherit;
+}
+	
+.tb-megamenu .nav-collapse,
+.tb-megamenu .nav-collapse .dropdown-menu {
+  background-color: #333;
+}
+.tb-megamenu .nav-collapse .nav > li > a, 
+.tb-megamenu .nav-collapse .dropdown-menu a {
+  border-bottom-color: #444;
+  border-top-color: #444;
+  color: #eee;
+}
+.tb-megamenu .nav > li > a {
+  color: #eee;
+  border-right: 1px solid #444;
+}
+}
+
+@media (max-width: 738px) {
+  .tb-megamenu .nav-collapse .nav li a {
+	 border-top-color: #444;
+  }
+  .tb-megamenu .nav-collapse .nav > li > a, 
+  .tb-megamenu .nav-collapse .dropdown-menu a {
+    border-bottom: none;
+    border-top-color: #444;
+    color: #eee;
+  }
+  .tb-megamenu .row-fluid + .row-fluid {
+	border-top-color: #444;
+  }
+}
