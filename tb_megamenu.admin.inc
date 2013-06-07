@@ -89,7 +89,7 @@ function tb_megamenu_configure_form($form, &$form_state, $menu_names = array()) 
     drupal_add_js(libraries_get_path('chosen') . '/chosen.jquery.js');
   }
   else {
-    drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/chosen.jquery.js');
+    drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/chosen.jquery.js');
   }  
   drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/tb-megamenu-backend.js');
   drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/tb-megamenu-object.js');

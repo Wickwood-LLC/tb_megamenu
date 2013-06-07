@@ -16,6 +16,17 @@
   color: #abba64;
 }
 
+.tb-megamenu .nav li.dropdown.open > .dropdown-toggle,
+.tb-megamenu .nav li.dropdown.open.active > .dropdown-toggle {
+  background-color: #fff;
+  color: #abba64;
+}
+.tb-megamenu .nav > li.dropdown.open.active > a:hover,
+.tb-megamenu .nav > li.dropdown.open.active > a:focus {
+  background-color: #fff;
+  color: #abba64;
+}
+
 .tb-megamenu .dropdown-menu li > a:hover, 
 .tb-megamenu .dropdown-menu li > a:focus, 
 .tb-megamenu .dropdown-submenu:hover > a {

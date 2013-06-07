@@ -1413,7 +1413,7 @@
   }
 .tb-megamenu .nav-collapse .nav > li > a:hover,
 .tb-megamenu .nav-collapse .nav > li > a:focus {
-    background-color: #666;
+    background-color: #222;
     background-image: none;
 	color: #fff;
     filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
@@ -1433,7 +1433,7 @@
   }
 .tb-megamenu .nav-collapse .dropdown-menu a:hover,
 .tb-megamenu .nav-collapse .dropdown-menu a:focus {
-    background-color: #666;
+    background-color: inherit;
     background-image: none;
     filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   }
@@ -1588,7 +1588,8 @@
   } 
   .tb-megamenu .mega-nav > li a,
   .tb-megamenu .dropdown-menu .mega-nav > li a {
-    padding: 5px 20px;
+    padding: 5px 0;
+	margin-left: 20px;
   }
   .tb-megamenu .tb-block {
     margin-bottom: 0;
@@ -1606,7 +1607,7 @@
 }
 
 .tb-megamenu .block-view-demo .views-field-field-image img {
-  border: 1px solid #e5e5e5;
+  border: 1px solid #333;
   margin: 0 20px 0 0;
   max-width: none !important;
   padding: 4px;
@@ -1614,7 +1615,7 @@
 }
 
 .tb-megamenu .block-view-demo .item-list ul li {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #333;
   margin: 0;
   min-height: 60px;
   padding: 10px 0;
@@ -1630,7 +1631,7 @@
 
 .tb-megamenu .block-view-demo .views-field-title a {
   border-top: none;
-  color: #333;
+  color: #aaa;
   padding: 0;
 }
 
@@ -1638,6 +1639,7 @@
 .tb-megamenu .block-view-demo a:focus {
   background: none !important;
   border: none !important;
-  color: #e54e4b !important;
+  color: #e54e4;
   text-decoration: none;
 }
+

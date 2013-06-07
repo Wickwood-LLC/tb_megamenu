@@ -1,27 +1,13 @@
 <?php
 
-function tb_megamenu_get_all_blocks() {
-  global $_blocks_array;
-  if (empty($_blocks_array)) {
-    $blocks = _block_rehash($GLOBALS['conf']['theme_default']);
-    $_blocks_array = array ();
-    foreach ($blocks as $block) {
-      if ($block ['module'] != 'tb_megamenu') {
-        $_blocks_array[$block ['module'] . '--' . $block ['delta']] = $block ['info'] . ' (' . $block ['module'] . ':' . $block ['delta'] . ')';
-      }
-    }
-  }
-  return $_blocks_array;
-}
-
 function tb_megamenu_get_blocks_info() {
   static $_blocks_array = array();
   if (empty($_blocks_array)) {
-    $blocks = _block_rehash($GLOBALS['conf']['theme_default']);
+    $blocks = db_select('block', 'b')->fields('b')->execute()->fetchAll();
     $_blocks_array = array();
     foreach ($blocks as $block) {
-      if ($block['module'] != 'tb_megamenu') {
-        $_blocks_array[$block ['module'] . '--' . $block ['delta']] = $block;
+      if ($block->module != 'tb_megamenu') {
+        $_blocks_array[$block->module . '--' . $block->delta] = $block;
       }
     }
   }

@@ -18,6 +18,7 @@
 .tb-megamenu .nav li.dropdown.active > .dropdown-toggle,
 .tb-megamenu .nav li.dropdown.open.active > .dropdown-toggle {
   background-color: #009bd4;  
+  border-right-color: #4dc6f3;
   color: #fff;
 }
 

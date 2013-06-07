@@ -264,11 +264,10 @@ function template_preprocess_tb_megamenu_subnav(&$vars) {
 function template_preprocess_tb_megamenu_block(&$vars) {
   $block = tb_megamenu_load_block($vars['block_key']);
   if($block) {
-    $module = $block['module'];
-    $delta = $block['delta'];
-    $block = tb_megamenu_array_to_object($block);
+    $module = $block->module;
+    $delta = $block->delta;
     $content = module_invoke($module, 'block_view', $delta);
-    $block->subject = empty($content['subject']) ? $block->info : $content['subject'];
+    $block->subject = empty($content['subject']) ? $block->title : $content['subject'];
     if($content) {
       $vars['content'] = theme("block", array('elements' => array('content' => $content['content'], '#children' => (is_array($content['content']) ? drupal_render($content['content']) : $content['content']), '#block' => $block)));
     }
