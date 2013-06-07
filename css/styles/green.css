@@ -1,21 +1,34 @@
+.tb-megamenu .dropdown-menu {
+  border-bottom-color: #abba64;
+}
+
 .tb-megamenu .nav li.dropdown.active > .dropdown-toggle,
 .tb-megamenu .nav li.dropdown.open.active > .dropdown-toggle {
-  background-color: #7ab800;
+  background-color: #abba64;
+}
+
+.tb-megamenu .nav > li > a:focus, 
+.tb-megamenu .nav > li > a:hover {
+  color: #abba64;
+}
+
+.tb-megamenu .nav li.dropdown.open > .dropdown-toggle {
+  color: #abba64;
+}
+
+.tb-megamenu .dropdown-menu li > a:hover, 
+.tb-megamenu .dropdown-menu li > a:focus, 
+.tb-megamenu .dropdown-submenu:hover > a {
+  color: #abba64;
 }
 
 .tb-megamenu .nav > .active > a,
 .tb-megamenu .nav > .active > a:hover,
 .tb-megamenu .nav > .active > a:focus {
-  color: #eee;
+  color: #fff;
   text-shadow: none;
-  background-color: #7ab800;
-  background-image: -moz-linear-gradient(top,#88cc00,#690);
-  background-image: -webkit-gradient(linear,0 0,0 100%,from(#88cc00),to(#690));
-  background-image: -webkit-linear-gradient(top,#88cc00,#690);
-  background-image: -o-linear-gradient(top,#88cc00,#690);
-  background-image: linear-gradient(to bottom,#88cc00,#690);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff87cc00', endColorstr='#ff669900', GradientType=0);
+  background-color: #abba64;
+  background-image: none;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;

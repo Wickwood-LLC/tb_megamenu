@@ -7,7 +7,7 @@ function tb_megamenu_get_all_blocks() {
     $_blocks_array = array ();
     foreach ($blocks as $block) {
       if ($block ['module'] != 'tb_megamenu') {
-        $_blocks_array[$block['bid']] = $block ['info'] . ' (' . $block ['module'] . ':' . $block ['delta'] . ')';
+        $_blocks_array[$block ['module'] . '--' . $block ['delta']] = $block ['info'] . ' (' . $block ['module'] . ':' . $block ['delta'] . ')';
       }
     }
   }
@@ -21,7 +21,21 @@ function tb_megamenu_get_blocks_info() {
     $_blocks_array = array();
     foreach ($blocks as $block) {
       if ($block['module'] != 'tb_megamenu') {
-        $_blocks_array[$block['bid']] = $block;
+        $_blocks_array[$block ['module'] . '--' . $block ['delta']] = $block;
+      }
+    }
+  }
+  return $_blocks_array;
+}
+
+function tb_megamenu_get_blocks_options() {
+  static $_blocks_array = array();
+  if (empty($_blocks_array)) {
+    $blocks = _block_rehash($GLOBALS['conf']['theme_default']);
+    $_blocks_array = array();
+    foreach ($blocks as $block) {
+      if ($block['module'] != 'tb_megamenu') {
+        $_blocks_array[$block ['module'] . '--' . $block ['delta']] = empty($block['info']) ? $block['title'] : $block['info'];
       }
     }
   }
@@ -109,9 +123,9 @@ function tb_megamenu_find_menu_item($tree, $mlid) {
   return NULL;
 }
 
-function tb_megamenu_load_block($bid) {
+function tb_megamenu_load_block($block_key) {
   $blocks = tb_megamenu_get_blocks_info();
-  return isset($blocks[$bid]) ? $blocks[$bid] : $blocks[$bid];
+  return isset($blocks[$block_key]) ? $blocks[$block_key] : NULL;
 }
 
 function tb_megamenu_sync_config_all($items, &$menu_config) {
@@ -271,6 +285,9 @@ function tb_megamenu_edit_block_config(&$block_config) {
   if(!isset($block_config['duration'])) {
     $block_config['duration'] = 400;
   }
+  if(!isset($block_config['delay'])) {
+    $block_config['delay'] = 200;
+  }
   if(!isset($block_config['always-show-submenu'])) {
     $block_config['always-show-submenu'] = 1;
   }
@@ -312,8 +329,7 @@ function tb_megamenu_style_options($block_config) {
     '' => t('Default'),
     'black' => t('Black'),
     'blue' => t('Blue'),
-	'green' => t('Green'), 
-    'orange' => t('Orange'),      
+    'green' => t('Green'), 
   );
   $options = array();
   foreach($styles as $value => $title) {
@@ -444,3 +460,15 @@ function tb_megamenu_replace_css() {
     fclose($f);
   }
 }
+
+function tb_megamenu_get_counter($key) {
+  $value = &drupal_static($key, 0);
+  $value ++;
+  global $tb_elements_counter;
+  if(!$tb_elements_counter) {
+    $tb_elements_counter = array();
+  }
+  $tb_elements_counter[$key] = $value;
+  return "tb-megamenu-$key-$value";
+}
+

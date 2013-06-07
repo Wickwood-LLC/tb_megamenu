@@ -22,10 +22,10 @@ function tb_megamenu_request() {
       }
       break;
     case 'load_block':
-      $bid = isset($_POST['bid']) ? $_POST['bid'] : NULL;
+      $block_key = isset($_POST['block_key']) ? $_POST['block_key'] : NULL;
       $id = isset($_POST['id']) ? $_POST['id'] : NULL;
-      if($bid) {
-        $content = json_encode(array('content' => theme('tb_megamenu_block', array('bid' => $bid)), 'id' => $id));
+      if($block_key) {
+        $content = json_encode(array('content' => theme('tb_megamenu_block', array('block_key' => $block_key)), 'id' => $id));
         print($content);
       }
       break;

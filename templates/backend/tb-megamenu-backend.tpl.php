@@ -28,6 +28,14 @@
                 </div>
               </fieldset>
             </li>
+            <li id="tb-megamenu-delay-wrapper" style="display: <?php print $block_config['animation'] == 'none' ? 'none' : 'inline-block';?>;" title="<?php print t('Delay time of the animation - this field must be an integer.');?>">
+              <label class="hasTip"><?php print t('Delay (ms)') ?></label>
+              <fieldset class="btn-group">
+                <div class="controls tb-controls">
+                  <input class="input-medium toolitem-delay toolbox-input" name="tb-megamenu-delay" type="text" value="<?php print $block_config['delay'];?>" data-name="delay"></input>
+                </div>
+              </fieldset>
+            </li>
             <li id="tb-megamenu-duration-wrapper" style="display: <?php print $block_config['animation'] == 'none' ? 'none' : 'inline-block';?>;" title="<?php print t('Duration of the animation - this field must be an integer.');?>">
               <label class="hasTip"><?php print t('Duration (ms)') ?></label>
               <fieldset class="btn-group">

@@ -1,16 +1,5 @@
 <?php
 
-function tb_megamenu_get_counter($key) {
-  $value = &drupal_static($key, 0);
-  $value ++;
-  global $tb_elements_counter;
-  if(!$tb_elements_counter) {
-    $tb_elements_counter = array();
-  }
-  $tb_elements_counter[$key] = $value;
-  return "tb-megamenu-$key-$value";
-}
-
 function template_preprocess_tb_megamenu(&$vars) {
   $menu_name = $vars['menu_name'];
   $items = menu_tree_all_data($menu_name);
@@ -23,14 +12,16 @@ function template_preprocess_tb_megamenu(&$vars) {
   $vars['classes_array'][] = "tb-megamenu-" . str_replace('_', '-', $menu_name);
   if($vars['section'] == 'frontend' && $block_config['style'] != '') {
     drupal_add_css(drupal_get_path("module", "tb_megamenu") . "/css/styles/" . $block_config['style'] . ".css");
-    $vars['classes_array'][] = "tb-megamenu-" . $block_config['style'];
+    $vars['classes_array'][] = "style-" . $block_config['style'];
   }
   if($block_config['animation'] != 'none') {
     $vars['classes_array'][] = "animate";
     $vars['classes_array'][] = $block_config['animation'];
     $vars['attributes_array']['data-duration'] = $block_config['duration'];
+    $vars['attributes_array']['data-delay'] = $block_config['delay'];
+    $vars['attributes_array']['id'] = "tb-megamenu-" . str_replace('_', '-', $menu_name);
   }
-  $vars['content'] = theme('tb_megamenu_ul', array(
+  $vars['content'] = theme('tb_megamenu_nav', array(
     'level' => 0,
     'menu_config' => $menu_config,
     'block_config' => $block_config,
@@ -39,9 +30,13 @@ function template_preprocess_tb_megamenu(&$vars) {
     'section' => $vars['section'],
   ));
   $vars['block_config'] = $block_config;
-  if($block_config['animation'] != 'none') {
+  if($vars['section'] == 'frontend' && $block_config['animation'] != 'none') {
     $css = array();
     $css[] = '.tb-megamenu.animate .mega > .mega-dropdown-menu, .tb-megamenu.animate.slide .mega > .mega-dropdown-menu > div {';
+    $css[] = '  transition-delay: ' . $block_config['delay'] . 'ms;';
+    $css[] = '  -webkit-transition-delay: ' . $block_config['delay'] . 'ms;';
+    $css[] = '  -ms-transition-delay: ' . $block_config['delay'] . 'ms;';
+    $css[] = '  -o-transition-delay: ' . $block_config['delay'] . 'ms;';
     $css[] = '  transition-duration: ' . $block_config['duration'] . 'ms;';
     $css[] = '  -webkit-transition-duration: ' . $block_config['duration'] . 'ms;';
     $css[] = '  -ms-transition-duration: ' . $block_config['duration'] . 'ms;';
@@ -51,13 +46,13 @@ function template_preprocess_tb_megamenu(&$vars) {
   }
 }
 
-function template_preprocess_tb_megamenu_ul(&$vars) {
+function template_preprocess_tb_megamenu_nav(&$vars) {
   $items = $vars['items'];
   $level = $vars['level'];
   $lis = array();
   foreach ($items as $item) {
     if(!$item['link']['hidden']) {
-      $lis[] = theme('tb_megamenu_li', array(
+      $lis[] = theme('tb_megamenu_item', array(
         'level' => $level + 1,
         'item' => $item,
         'menu_config' => $vars['menu_config'],
@@ -69,17 +64,21 @@ function template_preprocess_tb_megamenu_ul(&$vars) {
   }
   $vars['lis'] = implode("\n", $lis);
   $vars['classes_array'][] = "nav";
-  $vars['classes_array'][] = "level" . $level;
-  $vars['classes_array'][] = "tb-megamenu-items-" . count($items);
+  $vars['classes_array'][] = "level-" . $level;
+  $vars['classes_array'][] = "items-" . count($items);
 }
 
-function template_preprocess_tb_megamenu_li(&$vars) {
+function template_preprocess_tb_megamenu_item(&$vars) {
   $level = $vars['level'];
   $item = $vars['item'];
   $mlid = $item['link']['mlid'];
   $trail = $vars['trail'];
   $menu_config = $vars['menu_config'];
-  if((isset($menu_config[$mlid]['rows_content']) && !empty($menu_config[$mlid]['rows_content'])) || !empty($item['below'])) {
+  $item_config = isset($menu_config[$mlid]['item_config']) ? $menu_config[$mlid]['item_config'] : array();
+  tb_megamenu_edit_item_config($item_config);
+  $vars['item_config'] = $item_config;
+  if(((isset($menu_config[$mlid]['rows_content']) && !empty($menu_config[$mlid]['rows_content'])) || !empty($item['below'])) 
+      && ($vars['section'] != 'frontend' || !$item_config['hidesub'])) {
     $vars['submenu'] = theme('tb_megamenu_submenu', array(
       'parent' => $item,
       'level' => $level,
@@ -89,9 +88,11 @@ function template_preprocess_tb_megamenu_li(&$vars) {
       'section' => $vars['section'],
     ));
   }
-  $item_config = isset($menu_config[$mlid]['item_config']) ? $menu_config[$mlid]['item_config'] : array();
-  tb_megamenu_edit_item_config($item_config);
-  $vars['classes_array'][] = 'tb-megamenu-level-' . $level;
+  else {
+    $vars['submenu'] = NULL;
+  }
+
+  $vars['classes_array'][] = 'level-' . $level;
   $vars['classes_array'][] = 'mega';
   if(!empty($item_config['class'])) {
     $vars['classes_array'][] = $item_config['class'];
@@ -101,9 +102,6 @@ function template_preprocess_tb_megamenu_li(&$vars) {
   }
   if($item_config['hidewcol']) {
     $vars['classes_array'][] = "sub-hidden-collapse";
-  }
-  if ($vars['section'] == 'frontend' && $item_config['hidesub']) {
-    $vars['submenu'] = NULL;
   }
 
   if($item_config['group'] && $vars['submenu']) {
@@ -135,12 +133,7 @@ function template_preprocess_tb_megamenu_li(&$vars) {
   $vars['attributes_array']['data-hidesub'] = $item_config['hidesub'];
   if($vars['section'] == 'backend') {
     $vars['attributes_array']['title'] = t("Menu Item");
-    if(!$item_config['hidesub'] && $vars['submenu']) {
-      $vars['attributes_array']['title'] .= " - " . t("Click to keep submenu of this item showed.");
-    }
   }
-  
-  $vars['item_config'] = $item_config;
 }
 
 function template_preprocess_tb_megamenu_submenu(&$vars) {
@@ -149,41 +142,36 @@ function template_preprocess_tb_megamenu_submenu(&$vars) {
   $menu_config = $vars['menu_config'];
   $item_config = isset($menu_config[$mlid]) ? $menu_config[$mlid] : array();
   $submenu_config = isset($item_config['submenu_config']) ? $item_config['submenu_config'] : array();
+  $vars['submenu_config'] = $submenu_config;
   tb_megamenu_edit_submenu_config($submenu_config);
-  if(!(empty($item_config))) {
-    $rows = array();
-    foreach($item_config['rows_content'] as $row) {
-      $rows[] = theme('tb_megamenu_row', array(
-        'row' => $row,
-        'parent' => $vars['parent'],
-        'level' => $vars['level'],
-        'menu_config' => $vars['menu_config'],
-        'block_config' => $vars['block_config'],
-        'trail' => $vars['trail'],
-        'section' => $vars['section'],
-      ));
-    }
-    $vars['rows'] = implode("\n", $rows);
-    $vars['submenu_config'] = $submenu_config;
-    if($submenu_config['class'] != "") {
-      $vars['classes_array'][] = $submenu_config['class'];
-    }
-    if($submenu_config['group']) {
-      $vars['classes_array'][] = 'mega-group-ct';
-    }
-    else {
-      $vars['classes_array'][] = 'dropdown-menu';
-      $vars['classes_array'][] = 'mega-dropdown-menu';
-    }
-    $vars['classes_array'][] = 'nav-child';
-    $vars['attributes_array']['data-class'] = $submenu_config['class'];
-    $vars['attributes_array']['data-width'] = $submenu_config['width'];
-    if (!empty($submenu_config['width'])) {
-      $vars['attributes_array']['style'] = "width: " . $submenu_config['width'] . "px;";
-    }
-    if($vars['section'] == 'backend') {
-      $vars['attributes_array']['title'] = t("Submenu - Click to config for this submenu");
-    }
+  $rows = array();
+  foreach($item_config['rows_content'] as $row) {
+    $rows[] = theme('tb_megamenu_row', array(
+      'row' => $row,
+      'parent' => $vars['parent'],
+      'level' => $vars['level'],
+      'menu_config' => $vars['menu_config'],
+      'block_config' => $vars['block_config'],
+      'trail' => $vars['trail'],
+      'section' => $vars['section'],
+    ));
+  }
+  $vars['rows'] = implode("\n", $rows);
+  if($submenu_config['class'] != "") {
+    $vars['classes_array'][] = $submenu_config['class'];
+  }
+  if($submenu_config['group']) {
+    $vars['classes_array'][] = 'mega-group-ct';
+  }
+  else {
+    $vars['classes_array'][] = 'dropdown-menu';
+    $vars['classes_array'][] = 'mega-dropdown-menu';
+  }
+  $vars['classes_array'][] = 'nav-child';
+  $vars['attributes_array']['data-class'] = $submenu_config['class'];
+  $vars['attributes_array']['data-width'] = $submenu_config['width'];
+  if (!empty($submenu_config['width'])) {
+    $vars['attributes_array']['style'] = "width: " . $submenu_config['width'] . "px;";
   }
 }
 
@@ -208,11 +196,12 @@ function template_preprocess_tb_megamenu_column(&$vars) {
   $col = $vars['col']['col_content'];
   $col_config = $vars['col']['col_config'];
   tb_megamenu_edit_col_config($col_config);
+  $vars['col_config'] = $col_config;
   $vars['close_button'] = FALSE;
   $tb_items = array();
   foreach($col as $tb_item) {
     if($tb_item['type'] == 'menu_item') {
-      $tb_items[] = theme('tb_megamenu_subul', array(
+      $tb_items[] = theme('tb_megamenu_subnav', array(
         'col' => $col,
         'items' => $vars['parent']['below'],
         'level' => $vars['level'],
@@ -225,7 +214,7 @@ function template_preprocess_tb_megamenu_column(&$vars) {
     }
     else {
       $tb_items[] = theme('tb_megamenu_block', array(
-        'bid' => $tb_item['bid'],
+        'block_key' => $tb_item['block_key'],
       ));
       if ($vars['section'] !== 'frontend') {
         $vars['close_button'] = '<span class="close" title="' . t("Remove this block") . '">X</span>';
@@ -233,7 +222,6 @@ function template_preprocess_tb_megamenu_column(&$vars) {
     }
   }
   $vars['tb_items'] = implode("\n", $tb_items);
-  $vars['col_config'] = $col_config;
   $vars['classes_array'][] = 'span' . $col_config['width'];
   $vars['classes_array'][] = ' mega-col-nav';
   if(!empty($col_config['class'])) {
@@ -249,19 +237,16 @@ function template_preprocess_tb_megamenu_column(&$vars) {
   $vars['attributes_array']['data-width'] = $col_config['width'];
   $vars['attributes_array']['data-hidewcol'] = $col_config['hidewcol'];
   $vars['attributes_array']['id'] = tb_megamenu_get_counter("column");
-  if($vars['section'] == 'backend') {
-    $vars['attributes_array']['title'] = t("Column - Click to config for this column");
-  }
 }
 
-function template_preprocess_tb_megamenu_subul(&$vars) {
+function template_preprocess_tb_megamenu_subnav(&$vars) {
   $col = $vars['col'];
   $items = $vars['items'];
   $level = $vars['level'];
   $lis = array();
   foreach($col as $tb_item) {
     $item = tb_megamenu_get_menu_item('main-menu', $tb_item['mlid']);
-    $lis[] = theme('tb_megamenu_li', array(
+    $lis[] = theme('tb_megamenu_item', array(
       'level' => $level + 1,
       'item' => $item,
       'menu_config' => $vars['menu_config'],
@@ -272,12 +257,12 @@ function template_preprocess_tb_megamenu_subul(&$vars) {
   }
   $vars['lis'] = implode("\n", $lis);
   $vars['classes_array'][] = "mega-nav";
-  $vars['classes_array'][] = "level" . $level;
-  $vars['classes_array'][] = "tb-megamenu-items-" . count($col);
+  $vars['classes_array'][] = "level-" . $level;
+  $vars['classes_array'][] = "items-" . count($col);
 }
 
 function template_preprocess_tb_megamenu_block(&$vars) {
-  $block = tb_megamenu_load_block($vars['bid']);
+  $block = tb_megamenu_load_block($vars['block_key']);
   if($block) {
     $module = $block['module'];
     $delta = $block['delta'];
@@ -290,7 +275,7 @@ function template_preprocess_tb_megamenu_block(&$vars) {
     $vars['classes_array'][] = "tb-block";
     $vars['classes_array'][] = "tb-megamenu-block";
     $vars['attributes_array']['data-type'] = "block";
-    $vars['attributes_array']['data-id'] = $block->bid;
+    $vars['attributes_array']['data-block'] = $vars['block_key'];
   }
   else {
     $vars['content'] = NULL;
@@ -305,7 +290,7 @@ function template_preprocess_tb_megamenu_backend(&$vars) {
   $vars['menu_content'] = $menu_content['content']['#markup'];
   $vars['item_toolbox'] = theme_render_template(drupal_get_path('module', 'tb_megamenu') . "/templates/backend/tb-megamenu-item-toolbox.tpl.php", array());
   $vars['submenu_toolbox'] = theme_render_template(drupal_get_path('module', 'tb_megamenu') . "/templates/backend/tb-megamenu-submenu-toolbox.tpl.php", array());
-  $vars['column_toolbox'] = theme_render_template(drupal_get_path('module', 'tb_megamenu') . "/templates/backend/tb-megamenu-column-toolbox.tpl.php", array('blocks' => tb_megamenu_get_blocks_info()));
+  $vars['column_toolbox'] = theme_render_template(drupal_get_path('module', 'tb_megamenu') . "/templates/backend/tb-megamenu-column-toolbox.tpl.php", array('blocks_options' => tb_megamenu_get_blocks_options()));
   $vars['block_config'] = $block_config;
   $vars['animation_options'] = tb_megamenu_animation_options($block_config);
   $vars['style_options'] = tb_megamenu_style_options($block_config);

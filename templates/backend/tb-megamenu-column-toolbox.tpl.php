@@ -49,8 +49,8 @@
         <select class="toolcol-block toolbox-input toolbox-select input-medium" name="toolcol-block" data-name="block" data-placeholder="<?php print t('Select Block') ?>" style="width: 200px;">
           <option value=""></option>
           <?php
-          foreach ($blocks as $bid => $block) {
-            print "<option value=\"{$bid}\">" . (empty($block['title']) ? $block['info'] : $block['title']) . "</option>\n";
+          foreach ($blocks_options as $block_key => $block) {
+            print "<option value=\"{$block_key}\">" . $block . "</option>\n";
           }
           ?>
         </select>

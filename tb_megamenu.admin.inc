@@ -36,20 +36,43 @@ function theme_tb_megamenu_admin_settings($variables) {
 }
 
 function tb_megamenu_configure_form($form, &$form_state, $menu_names = array()) {
-  drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/fonts/font-awesome/css/font-awesome.css', array(
-    'group' => CSS_DEFAULT,
-    'basename' => 'tb-megamenu-font-awesome.css',
-  ));
-  drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/fonts/font-awesome/css/font-awesome-ie7.css', array(
-    'group' => CSS_DEFAULT,
-    'browsers' => array('IE' => 'IE7', '!IE' => FALSE),
-    'basename' => 'tb-megamenu-font-awesome-ie7.css',
-    'every_page' => TRUE,
-  ));
-  drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/chosen/chosen.css', array(
-    'group' => CSS_DEFAULT,
-    'basename' => 'tb-megamenu-chosen.css',
-  ));
+  if(module_exists('fontawesome') && file_exists(libraries_get_path('fontawesome') . '/css/fontawesome.css')) {
+    drupal_add_css(libraries_get_path('fontawesome') . '/css/font-awesome.css', array(
+      'group' => CSS_DEFAULT,
+      'basename' => 'tb-megamenu-font-awesome.css',
+    ));
+    drupal_add_css(libraries_get_path('fontawesome') . '/css/font-awesome-ie7.css', array(
+      'group' => CSS_DEFAULT,
+      'browsers' => array('IE' => 'IE7', '!IE' => FALSE),
+      'basename' => 'tb-megamenu-font-awesome-ie7.css',
+      'every_page' => TRUE,
+    ));
+  }
+  else {
+    drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/fonts/font-awesome/css/font-awesome.css', array(
+      'group' => CSS_DEFAULT,
+      'basename' => 'tb-megamenu-font-awesome.css',
+    ));
+    drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/fonts/font-awesome/css/font-awesome-ie7.css', array(
+      'group' => CSS_DEFAULT,
+      'browsers' => array('IE' => 'IE7', '!IE' => FALSE),
+      'basename' => 'tb-megamenu-font-awesome-ie7.css',
+      'every_page' => TRUE,
+    ));
+  }
+  if(module_exists('chosen') && file_exists(libraries_get_path('chosen') . '/chosen.css')) {
+    drupal_add_css(libraries_get_path('chosen') . '/chosen.css', array(
+      'group' => CSS_DEFAULT,
+      'basename' => 'tb-megamenu-chosen.css',
+    ));
+  }
+  else {
+    drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/chosen/chosen.css', array(
+      'group' => CSS_DEFAULT,
+      'basename' => 'tb-megamenu-chosen.css',
+    ));
+  }
+
   drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/base.css', array(
     'group' => CSS_DEFAULT,
     'basename' => 'tb-megamenu-base.css',
@@ -62,7 +85,12 @@ function tb_megamenu_configure_form($form, &$form_state, $menu_names = array()) 
     'group' => CSS_DEFAULT,
     'basename' => 'tb-megamenu-backend.css',
   ));
-  drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/chosen.jquery.js');
+  if(module_exists('chosen') && file_exists(libraries_get_path('chosen') . '/chosen.jquery.js')) {
+    drupal_add_js(libraries_get_path('chosen') . '/chosen.jquery.js');
+  }
+  else {
+    drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/chosen.jquery.js');
+  }  
   drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/tb-megamenu-backend.js');
   drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/tb-megamenu-object.js');
   if(!empty($menu_names)) {

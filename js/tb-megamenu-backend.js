@@ -5,6 +5,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     attach: function(context) {
       $('select[name="tb-megamenu-animation"]').change(function() {
         $('#tb-megamenu-duration-wrapper').css({'display': ($(this).val() == 'none' ? 'none' : 'inline-block')});
+        $('#tb-megamenu-delay-wrapper').css({'display': ($(this).val() == 'none' ? 'none' : 'inline-block')});
       });
       $(".tb-megamenu-column-inner .close").click(function() {
         $(this).parent().html("");
