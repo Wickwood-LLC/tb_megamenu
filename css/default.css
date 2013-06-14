@@ -1385,7 +1385,7 @@
     cursor: pointer;
   }
 .tb-megamenu .nav-collapse {
-    background: #e6e6e6;
+    background: #000;
     margin-top: 10px;
 	position: absolute;
 	top: 27px;
@@ -1400,9 +1400,9 @@
   }
 .tb-megamenu .nav-collapse .nav > li > a,
 .tb-megamenu .nav-collapse .dropdown-menu a {
-    background: none;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #222;
 	border-right: none;	
+	color: #fff;
     text-shadow: none;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
@@ -1413,20 +1413,17 @@
   }
 .tb-megamenu .nav-collapse .nav > li > a:hover,
 .tb-megamenu .nav-collapse .nav > li > a:focus {
-    background-color: #222;
+    background-color: #fff;
     background-image: none;
-	color: #fff;
     filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+	color: #e54e4b;
   }
-.tb-megamenu .nav-collapse .nav > li.active > a  {
-  color: #fff;
-}
 .tb-megamenu .nav-collapse .nav > li.active > a:hover,
 .tb-megamenu .nav-collapse .nav > li.active > a:focus {
   background-color: #e54e4b;
 }
 .tb-megamenu .nav-collapse .dropdown-menu a {
-    border-top: 1px solid #d9d9d9;
+    border-top: 1px solid #222;
     border-bottom: 0;
     font-weight: normal;
     padding: 10px 20px;
@@ -1437,13 +1434,10 @@
     background-image: none;
     filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   }
-.tb-megamenu .nav li.dropdown.open > .dropdown-toggle {
-  color: #fff;
-}
 .tb-megamenu .nav-collapse .dropdown-menu {
     margin: 0;
     padding: 0;
-    background-color: #e6e6e6;
+    background-color: #000;
     border: none;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
@@ -1465,6 +1459,9 @@
 .tb-megamenu .customization {
     display: none;
   }
+.tb-megamenu .tb-block .block-title {
+  color: #fff;
+}
 }
 
 @media (min-width: 980px) {
@@ -1573,7 +1570,7 @@
   }
   .tb-megamenu .row-fluid + .row-fluid {
     padding-top: 10px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #222;
   }
   .tb-megamenu .hidden-collapse,
   .tb-megamenu .always-show  .caret,

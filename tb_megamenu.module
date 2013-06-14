@@ -16,22 +16,30 @@ function tb_megamenu_menu() {
   );    
 
   $items['admin/structure/tb-megamenu'] = array(
-    'title' => 'TB Mega Menu Settings', 
-    'description' => t('Config all MegaMenu'),
+    'title' => 'TB Mega Menu', 
+    'description' => t('TB Mega Menu'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('tb_megamenu_admin_settings'),
     'access arguments' => array('administer tb_megamenu'),
     'file' => 'tb_megamenu.admin.inc', 
   );
+
   $items['admin/structure/tb-megamenu/%tb_megamenu_menu_name'] = array(
-    'title' => 'Config MegaMenu', 
-    'description' => t('Config MegaMenu'), 
+    'title' => 'Config TB Mega Menu', 
+    'description' => t('Config TB Mega Menu'), 
     'page callback' => 'drupal_get_form', 
     'page arguments' => array ('tb_megamenu_configure_form', 3),
     'access arguments' => array(3),
     'type' => MENU_CALLBACK,
     'access arguments' => array('administer tb_megamenu'),
     'file' => 'tb_megamenu.admin.inc', 
+  );
+
+  $items['admin/structure/tb-megamenu/%tb_megamenu_menu_name/config'] = array(
+    'title' => 'Config TB Mega Menu',
+    'weight' => -10,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
   );
   return $items;
 }
@@ -162,6 +170,7 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
   $items['tb_megamenu_block'] = array(
     'variables' => array(
       'block_key' => NULL,
+      'section' => 'frontend',
     ), 
     'template' => 'tb-megamenu-block',
     'path' => $path . '/templates',
@@ -197,41 +206,14 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
  */
 function tb_megamenu_block_view($delta = 0) {
   if(module_exists('fontawesome') && file_exists(libraries_get_path('fontawesome') . '/css/fontawesome.css')) {
-    drupal_add_css(libraries_get_path('fontawesome') . '/css/font-awesome.css', array(
-      'group' => CSS_DEFAULT,
-      'basename' => 'tb-megamenu-font-awesome.css',
-    ));
-    drupal_add_css(libraries_get_path('fontawesome') . '/css/font-awesome-ie7.css', array(
-      'group' => CSS_DEFAULT,
-      'browsers' => array('IE' => 'IE7', '!IE' => FALSE),
-      'basename' => 'tb-megamenu-font-awesome-ie7.css',
-      'every_page' => TRUE,
-    ));
+    tb_megamenu_add_css(libraries_get_path('fontawesome') . '/css/font-awesome.css');
   }
   else {
-    drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/fonts/font-awesome/css/font-awesome.css', array(
-      'group' => CSS_DEFAULT,
-      'basename' => 'tb-megamenu-font-awesome.css',
-    ));
-    drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/fonts/font-awesome/css/font-awesome-ie7.css', array(
-      'group' => CSS_DEFAULT,
-      'browsers' => array('IE' => 'IE7', '!IE' => FALSE),
-      'basename' => 'tb-megamenu-font-awesome-ie7.css',
-      'every_page' => TRUE,
-    ));
+    tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/fonts/font-awesome/css/font-awesome.css');
   }
-  drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/bootstrap.css', array(
-    'group' => CSS_DEFAULT,
-    'basename' => 'tb-megamenu-bootstrap.css',
-  ));
-  drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/base.css', array(
-    'group' => CSS_DEFAULT,
-    'basename' => 'tb-megamenu-base.css',
-  ));
-  drupal_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/default.css', array(
-    'group' => CSS_DEFAULT,
-    'basename' => 'tb-megamenu-default.css',
-  ));  
+  tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/bootstrap.css');
+  tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/base.css');
+  tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/default.css');
   drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/tb-megamenu-frontend.js');
   drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/tb-megamenu-touch.js');
   return array('content' => array(
@@ -274,3 +256,21 @@ function tb_megamenu_theme_registry_alter(&$theme_registry) {
   }
 }
 
+function tb_megamenu_block_view_alter(&$data, $block) {
+  if (isset($data['content']) && is_array($data['content'])) {
+    $contextual_links = array(
+      'admin/structure/menu/manage',
+      array($block->delta),
+    );
+
+    $data['content']['#contextual_links']['menu_config'] = $contextual_links;
+
+    $contextual_links = array(
+      'admin/structure/tb-megamenu',
+      array($block->delta),
+    );
+
+    $data['content']['#contextual_links']['tb_megamenu_config'] = $contextual_links;
+    
+  }
+}

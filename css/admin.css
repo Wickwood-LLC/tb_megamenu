@@ -160,8 +160,9 @@
 
 /* ADMIN LAYOUT
 ---------------------------------------------------*/
-#tb-megamenu-block-wrapper {
-  width: 230px;
+.tb-megamenu #tb-megamenu-block-wrapper .chzn-container,
+.tb-megamenu #tb-megamenu-block-wrapper .chzn-drop{
+  width: 230px !important;
 }
 
 .tb-megamenu .chzn-container,
@@ -170,6 +171,7 @@
   min-width: 100px;
   width: 100% !important;
 }
+
 
 
 /* Toolbar ---*/

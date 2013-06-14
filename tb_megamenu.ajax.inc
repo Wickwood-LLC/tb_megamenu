@@ -25,7 +25,7 @@ function tb_megamenu_request() {
       $block_key = isset($_POST['block_key']) ? $_POST['block_key'] : NULL;
       $id = isset($_POST['id']) ? $_POST['id'] : NULL;
       if($block_key) {
-        $content = json_encode(array('content' => theme('tb_megamenu_block', array('block_key' => $block_key)), 'id' => $id));
+        $content = json_encode(array('content' => theme('tb_megamenu_block', array('block_key' => $block_key, 'section' => 'backend')), 'id' => $id));
         print($content);
       }
       break;

@@ -1,5 +1,35 @@
 <?php
 
+function tb_megamenu_add_css($file) {
+  $path_info = pathinfo($file);
+  if ($path_info['extension'] == 'less') {
+    $uri = "public://tb_megamenu";
+    if (!is_dir($uri)) {
+      mkdir($uri, 0777);
+    }
+    $css_uri = "public://tb_megamenu/css";
+    if (!is_dir($css_uri)) {
+      mkdir($css_uri, 0777);
+    }
+    if(!class_exists('lessc')) {
+      include_once drupal_get_path('module', 'tb_megamenu') . '/includes/lessphp/lessc.inc.php';
+    }
+    $less = new lessc();
+    $output = $less->compileFile($file);
+    file_put_contents($css_uri . "/" . $path_info['filename'] . ".css", $output);
+    drupal_add_css($css_uri . "/" . $path_info['filename'] . ".css", array(
+      'group' => CSS_DEFAULT,
+      'basename' => 'tb-megamenu-' . $path_info['filename'] . ".css",
+    ));
+  }
+  else {
+    drupal_add_css($file, array(
+      'group' => CSS_DEFAULT,
+      'basename' => 'tb-megamenu-' . $path_info['basename'],
+    ));
+  }
+}
+
 function tb_megamenu_get_blocks_info() {
   static $_blocks_array = array();
   if (empty($_blocks_array)) {
@@ -26,6 +56,14 @@ function tb_megamenu_get_blocks_options() {
     }
   }
   return $_blocks_array;
+}
+
+function tb_megamenu_get_block_title($block_key) {
+  $blocks_options = tb_megamenu_get_blocks_options();
+  if(isset($blocks_options[$block_key])) {
+    return $blocks_options[$block_key];
+  }
+  return NULL;
 }
 
 function tb_megamenu_build_page_trail($page_menu) {
@@ -138,6 +176,9 @@ function tb_megamenu_sync_config($items, &$item_config, $_mlid) {
           'tb_item_config' => array(),
         );
       }
+    }
+    if(empty($item_config['rows_content'][0][0]['col_content'])) {
+      unset($item_config['rows_content'][0]);
     }
   }
   else {
