@@ -44,6 +44,14 @@ function tb_megamenu_menu() {
   return $items;
 }
 
+function tb_megamenu_permission() {
+  return array(
+    'administer tb_megamenu' => array(
+      'title' => t('Administer TB Mega Menu'),
+    ),
+  );
+}
+
 function tb_megamenu_theme($existing, $type, $theme, $path) {
   $items = array();
   $items['tb_megamenu'] = array(
@@ -62,6 +70,7 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
 
   $items['tb_megamenu_nav'] = array(
     'variables' => array(
+      'menu_name' => NULL,
       'level' => NULL,
       'items' => NULL,
       'menu_config' => NULL,
@@ -79,6 +88,7 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
 
   $items['tb_megamenu_item'] = array(
     'variables' => array(
+      'menu_name' => NULL,
       'a_classes' => array(),
       'item' => NULL,
       'level' => NULL,
@@ -98,6 +108,7 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
 
   $items['tb_megamenu_submenu'] = array(
     'variables' => array(
+      'menu_name' => NULL,
       'parent' => NULL,
       'level' => NULL,
       'menu_config' => NULL,
@@ -115,6 +126,7 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
 
   $items['tb_megamenu_row'] = array(
     'variables' => array(
+      'menu_name' => NULL,
       'row' => NULL,
       'parent' => NULL,
       'level' => NULL,
@@ -133,6 +145,7 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
 
   $items['tb_megamenu_column'] = array(
     'variables' => array(
+      'menu_name' => NULL,
       'col' => NULL,
       'parent' => NULL,
       'level' => NULL,
@@ -151,6 +164,7 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
 
   $items['tb_megamenu_subnav'] = array(
     'variables' => array(
+      'menu_name' => NULL,
       'col' => NULL,
       'level' => NULL,
       'items' => NULL,
@@ -169,6 +183,7 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
 
   $items['tb_megamenu_block'] = array(
     'variables' => array(
+      'menu_name' => NULL,
       'block_key' => NULL,
       'section' => 'frontend',
     ), 
@@ -257,7 +272,7 @@ function tb_megamenu_theme_registry_alter(&$theme_registry) {
 }
 
 function tb_megamenu_block_view_alter(&$data, $block) {
-  if (isset($data['content']) && is_array($data['content'])) {
+  if (isset($data['content']) && is_array($data['content']) && $block->module == 'tb_megamenu') {
     $contextual_links = array(
       'admin/structure/menu/manage',
       array($block->delta),

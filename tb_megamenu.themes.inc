@@ -44,6 +44,7 @@ function template_preprocess_tb_megamenu(&$vars) {
     $vars['attributes_array']['id'] = "tb-megamenu-" . str_replace('_', '-', $menu_name);
   }
   $vars['content'] = theme('tb_megamenu_nav', array(
+    'menu_name' => $vars['menu_name'],
     'level' => 0,
     'menu_config' => $menu_config,
     'block_config' => $block_config,
@@ -75,6 +76,7 @@ function template_preprocess_tb_megamenu_nav(&$vars) {
   foreach ($items as $item) {
     if(!$item['link']['hidden']) {
       $lis[] = theme('tb_megamenu_item', array(
+        'menu_name' => $vars['menu_name'],
         'level' => $level + 1,
         'item' => $item,
         'menu_config' => $vars['menu_config'],
@@ -102,6 +104,7 @@ function template_preprocess_tb_megamenu_item(&$vars) {
   if(isset($menu_config[$mlid]['rows_content']) && !empty($menu_config[$mlid]['rows_content']) 
       && ($vars['section'] == 'backend' || !$item_config['hidesub'])) {
     $vars['submenu'] = theme('tb_megamenu_submenu', array(
+      'menu_name' => $vars['menu_name'],
       'parent' => $item,
       'level' => $level,
       'menu_config' => $vars['menu_config'],
@@ -169,6 +172,7 @@ function template_preprocess_tb_megamenu_submenu(&$vars) {
   $rows = array();
   foreach($item_config['rows_content'] as $row) {
     $rows[] = theme('tb_megamenu_row', array(
+      'menu_name' => $vars['menu_name'],
       'row' => $row,
       'parent' => $vars['parent'],
       'level' => $vars['level'],
@@ -202,6 +206,7 @@ function template_preprocess_tb_megamenu_row(&$vars) {
   $cols = array();
   foreach($row as $col) {
     $cols[] = theme('tb_megamenu_column', array(
+      'menu_name' => $vars['menu_name'],
       'col' => $col,
       'parent' => $vars['parent'],
       'level' => $vars['level'],
@@ -224,6 +229,7 @@ function template_preprocess_tb_megamenu_column(&$vars) {
   foreach($col as $tb_item) {
     if($tb_item['type'] == 'menu_item') {
       $tb_items[] = theme('tb_megamenu_subnav', array(
+        'menu_name' => $vars['menu_name'],
         'col' => $col,
         'items' => $vars['parent']['below'],
         'level' => $vars['level'],
@@ -268,8 +274,9 @@ function template_preprocess_tb_megamenu_subnav(&$vars) {
   $level = $vars['level'];
   $lis = array();
   foreach($col as $tb_item) {
-    $item = tb_megamenu_get_menu_item('main-menu', $tb_item['mlid']);
+    $item = tb_megamenu_get_menu_item($vars['menu_name'], $tb_item['mlid']);
     $lis[] = theme('tb_megamenu_item', array(
+      'menu_name' => $vars['menu_name'],
       'level' => $level + 1,
       'item' => $item,
       'menu_config' => $vars['menu_config'],

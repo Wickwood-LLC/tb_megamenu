@@ -54,6 +54,7 @@ function tb_megamenu_get_blocks_options() {
         $_blocks_array[$block ['module'] . '--' . $block ['delta']] = empty($block['info']) ? $block['title'] : $block['info'];
       }
     }
+    asort($_blocks_array);
   }
   return $_blocks_array;
 }
