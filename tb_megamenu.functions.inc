@@ -129,6 +129,9 @@ function tb_megamenu_find_templates($path) {
 
 function tb_megamenu_get_menu_item($menu_name, $mlid) {
   $tree = menu_tree_all_data($menu_name);
+  if (function_exists('i18n_menu_localize_tree')) {
+    $tree = i18n_menu_localize_tree($tree);
+  } 
   $item = tb_megamenu_find_menu_item($tree, $mlid);
   return $item;
 }
@@ -166,7 +169,7 @@ function tb_megamenu_sync_config_all($items, &$menu_config) {
 }
 
 function tb_megamenu_sync_config($items, &$item_config, $_mlid) {
-  if(empty($item_config)) {
+  if(empty($item_config['rows_content'])) {
     $item_config = array('rows_content' => array(0 => array(0 => array('col_content' => array(), 'col_config' => array()))), 'submenu_config' => array());
     foreach($items as $item) {
       $mlid = $item['link']['mlid'];
@@ -175,6 +178,7 @@ function tb_megamenu_sync_config($items, &$item_config, $_mlid) {
           'type' => 'menu_item',
           'mlid' => $mlid,
           'tb_item_config' => array(),
+          'weight' => $item['link']['weight'],
         );
       }
     }
@@ -192,6 +196,7 @@ function tb_megamenu_sync_config($items, &$item_config, $_mlid) {
             $existed = false;
             foreach ($items as $item) {
               if (!$item['link']['hidden'] && $tb_item['mlid'] == $item['link']['mlid']) {
+                $item_config['rows_content'][$i][$j]['col_content'][$k]['weight'] = $item['link']['weight'];
                 $existed = true;
                 break;
               }
@@ -219,25 +224,37 @@ function tb_megamenu_sync_config($items, &$item_config, $_mlid) {
           continue;
         }
         if($row > -1) {
-          $item_config['rows_content'][$row][$col]['col_content'][] = array(
-            'mlid' => $mlid,
-            'type' => 'menu_item',
-            'tb_item_config' => array(),
-          );
+          tb_megamenu_insert_tb_item($item_config, $row, $col, $item);
         }
         else {
           $row = 0;
           $col = 0;
-          $item_config['rows_content'][$row][$col]['col_content'][] = array(
-            'mlid' => $mlid,
-            'type' => 'menu_item',
-            'tb_item_config' => array(),
-          );
+          while(isset($item_config['rows_content'][$row][$col]['col_content']) && $item_config['rows_content'][$row][$col]['col_content'][0]['type'] == 'block') {
+            $row ++;
+          }
+          tb_megamenu_insert_tb_item($item_config, $row, $col, $item);
           $item_config['rows_content'][$row][$col]['col_config'] = array();
         }
       }
     }
   }
+}
+
+function tb_megamenu_insert_tb_item(&$item_config, $row, $col, $item) {
+  $i = 0;
+  $col_content = isset($item_config['rows_content'][$row][$col]['col_content']) ? $item_config['rows_content'][$row][$col]['col_content'] : array();
+  while($i < count($col_content) && $col_content[$i]['weight'] < $item['link']['weight']) {
+    $i ++;
+  }
+  for($j = count($col_content); $j > $i; $j --) {
+    $item_config['rows_content'][$row][$col]['col_content'][$j] = $item_config['rows_content'][$row][$col]['col_content'][$j - 1];
+  }
+  $item_config['rows_content'][$row][$col]['col_content'][$i] = array(
+    'mlid' => $item['link']['mlid'],
+    'type' => 'menu_item',
+    'weight' => $item['link']['weight'],
+    'tb_item_config' => array(),
+  );
 }
 
 function tb_megamenu_array_to_object($array) {

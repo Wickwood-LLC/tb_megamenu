@@ -25,6 +25,9 @@ function template_preprocess_tb_megamenu(&$vars) {
   else {
     $items = menu_tree_all_data($menu_name);
   }
+  if (function_exists('i18n_menu_localize_tree')) {
+    $items = i18n_menu_localize_tree($items);
+  }  
   $items_page = menu_tree_page_data($menu_name);
   $trail = tb_megamenu_build_page_trail($items_page);
   $menu_config = tb_megamenu_get_menu_config($menu_name);
