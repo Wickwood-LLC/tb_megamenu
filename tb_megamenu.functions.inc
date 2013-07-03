@@ -196,7 +196,7 @@ function tb_megamenu_sync_config_all($items, &$menu_config) {
 
 function tb_megamenu_sync_config($items, &$item_config, $_mlid) {
   if(empty($item_config['rows_content'])) {
-    $item_config = array('rows_content' => array(0 => array(0 => array('col_content' => array(), 'col_config' => array()))), 'submenu_config' => array());
+    $item_config['rows_content'] = array(0 => array(0 => array('col_content' => array(), 'col_config' => array()))); 
     foreach($items as $item) {
       $mlid = $item['link']['mlid'];
       if(!$item['link']['hidden']) {
