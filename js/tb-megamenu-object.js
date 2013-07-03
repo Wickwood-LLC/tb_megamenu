@@ -161,6 +161,25 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     }      
   }
 
+  actions.showBlockTitle = function() {
+    if (!currentSelected) return ;
+    var toggle = $('.toolcol-showblocktitle');
+    toggle.find('label').removeClass('active btn-success btn-danger btn-primary');
+    if(parseInt(currentSelected.attr('data-showblocktitle'))) {
+      update_toggle (toggle, 0);
+      currentSelected.attr('data-showblocktitle', 0);
+    }
+    else {
+      update_toggle (toggle, 1);
+      currentSelected.attr('data-showblocktitle', 1);
+    }
+    if($('#tb-megamenu-block-wrapper select[name="toolcol-block"]').val() != '') {
+      value = $('#tb-megamenu-block-wrapper select[name="toolcol-block"]').val();
+      $('#tb-megamenu-admin-mm-tb #toolbox-loading').show();
+      callAjax({'action': 'load_block', 'block_key': value, 'id': currentSelected.attr('id'), 'showblocktitle': parseInt(currentSelected.attr('data-showblocktitle'))});
+    }
+  }
+
   actions.toggleGroup = function () {
     if (!currentSelected) return ;
     var liitem = currentSelected.parent();
@@ -451,6 +470,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
           col_config['width'] = $(this).attr('data-width') ? $(this).attr('data-width') : "";
           col_config['class'] = $(this).attr('data-class') ? $(this).attr('data-class') : "";
           col_config['hidewcol'] = $(this).attr('data-hidewcol') ? $(this).attr('data-hidewcol') : "";
+          col_config['showblocktitle'] = $(this).attr('data-showblocktitle') ? $(this).attr('data-showblocktitle') : "1";
           var col = {'col_content': [], 'col_config': col_config};
           $(this).find('ul[class*="level"] > li:first').each(function() {
             var sub_level = parseInt($(this).attr('data-level'));
@@ -658,6 +678,14 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
         else {
           update_toggle (toggle, 0);
         }  
+        var toggle = $('.toolcol-showblocktitle');
+        toggle.find('label').removeClass('active btn-success btn-danger btn-primary');
+        if (!currentSelected.attr('data-showblocktitle') || parseInt(currentSelected.attr('data-showblocktitle'))) {
+          update_toggle (toggle, 1);
+        }
+        else {
+          update_toggle (toggle, 0);
+        }  
         break;
     }
   }
@@ -744,7 +772,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
       if (currentSelected.find ('ul[class*="level"]').length == 0) {
         if (value) {
           $('#tb-megamenu-admin-mm-tb #toolbox-loading').show();
-          callAjax({'action': 'load_block', 'block_key': value, 'id': currentSelected.attr('id')});
+          callAjax({'action': 'load_block', 'block_key': value, 'id': currentSelected.attr('id'), 'showblocktitle': parseInt(currentSelected.attr('data-showblocktitle'))});
         }
         else {
           currentSelected.find('.mega-inner').html('');

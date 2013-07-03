@@ -3,24 +3,7 @@
 function template_preprocess_tb_megamenu(&$vars) {
   $menu_name = $vars['menu_name'];
   if($vars['section'] == 'backend') {
-    global $menu_admin;
-    $sql = "
-      SELECT m.load_functions, m.to_arg_functions, m.access_callback, m.access_arguments, m.page_callback, m.page_arguments, m.delivery_callback, m.title, m.title_callback, m.title_arguments, m.type, m.description, ml.*
-      FROM {menu_links} ml LEFT JOIN {menu_router} m ON m.path = ml.router_path
-      WHERE ml.menu_name = :menu
-      ORDER BY p1 ASC, p2 ASC, p3 ASC, p4 ASC, p5 ASC, p6 ASC, p7 ASC, p8 ASC, p9 ASC";
-    $result = db_query($sql, array(':menu' => $menu_name), array('fetch' => PDO::FETCH_ASSOC));
-    $links = array();
-    foreach ($result as $item) {
-      $item['href'] = $item['link_path'];
-      $links[] = $item;
-    }
-    $items = menu_tree_data($links);
-    $node_links = array();
-    menu_tree_collect_node_links($items, $node_links);
-    $menu_admin = TRUE;
-    menu_tree_check_access($items, $node_links);
-    $menu_admin = FALSE;
+    $items = tb_megamenu_get_tree($menu_name);
   }
   else {
     $items = menu_tree_all_data($menu_name);
@@ -247,7 +230,10 @@ function template_preprocess_tb_megamenu_column(&$vars) {
       $tb_items[] = theme('tb_megamenu_block', array(
         'block_key' => $tb_item['block_key'],
         'section' => $vars['section'],
+        'showblocktitle' => $col_config['showblocktitle']
       ));
+      $vars['attributes_array']['data-showblocktitle'] = $col_config['showblocktitle'];
+      
       if ($vars['section'] !== 'frontend') {
         $vars['close_button'] = '<span class="close" title="' . t("Remove this block") . '">X</span>';
       }
@@ -300,7 +286,12 @@ function template_preprocess_tb_megamenu_block(&$vars) {
     $module = $block->module;
     $delta = $block->delta;
     $content = module_invoke($module, 'block_view', $delta);
-    $block->subject = empty($content['subject']) ? $block->title : $content['subject'];
+    if(isset($vars['showblocktitle']) && $vars['showblocktitle']) {
+      $block->subject = empty($content['subject']) ? $block->title : $content['subject'];
+    }
+    else {
+      $block->subject = "";
+    }
     if(empty($content) && $vars['section'] == 'backend') {
       $vars['content'] = tb_megamenu_get_block_title($vars['block_key']);
     }

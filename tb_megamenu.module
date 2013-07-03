@@ -186,6 +186,7 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
       'menu_name' => NULL,
       'block_key' => NULL,
       'section' => 'frontend',
+      'showblocktitle' => 1,
     ), 
     'template' => 'tb-megamenu-block',
     'path' => $path . '/templates',

@@ -127,8 +127,34 @@ function tb_megamenu_find_templates($path) {
   return $templates;
 }
 
+function tb_megamenu_get_tree($menu_name) {
+  static $trees = array();
+  if(!isset($trees[$menu_name])) {
+    global $menu_admin;
+    $sql = "
+      SELECT m.load_functions, m.to_arg_functions, m.access_callback, m.access_arguments, m.page_callback, m.page_arguments, m.delivery_callback, m.title, m.title_callback, m.title_arguments, m.type, m.description, ml.*
+      FROM {menu_links} ml LEFT JOIN {menu_router} m ON m.path = ml.router_path
+      WHERE ml.menu_name = :menu
+      ORDER BY p1 ASC, p2 ASC, p3 ASC, p4 ASC, p5 ASC, p6 ASC, p7 ASC, p8 ASC, p9 ASC";
+    $result = db_query($sql, array(':menu' => $menu_name), array('fetch' => PDO::FETCH_ASSOC));
+    $links = array();
+    foreach ($result as $item) {
+      $item['href'] = $item['link_path'];
+      $links[] = $item;
+    }
+    $items = menu_tree_data($links);
+    $node_links = array();
+    menu_tree_collect_node_links($items, $node_links);
+    $menu_admin = TRUE;
+    menu_tree_check_access($items, $node_links);
+    $menu_admin = FALSE;
+    $trees[$menu_name] = $items;
+  }
+  return $trees[$menu_name];
+}
+
 function tb_megamenu_get_menu_item($menu_name, $mlid) {
-  $tree = menu_tree_all_data($menu_name);
+  $tree = tb_megamenu_get_tree($menu_name);
   if (function_exists('i18n_menu_localize_tree')) {
     $tree = i18n_menu_localize_tree($tree);
   } 
@@ -314,6 +340,9 @@ function tb_megamenu_edit_col_config(&$col_config) {
   }
   if(!isset($col_config['hidewcol'])) {
     $col_config['hidewcol'] = 0;
+  }
+  if(!isset($col_config['showblocktitle'])) {
+    $col_config['showblocktitle'] = 0;
   }
 }
 

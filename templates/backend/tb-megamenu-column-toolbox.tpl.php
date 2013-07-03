@@ -58,6 +58,17 @@
     </li>
   </ul>
   <ul>
+    <li>
+      <label class="hasTip" title="<?php print t('Show block title');?>"><?php print t('Show block title') ?></label>
+      <fieldset class="radio btn-group toolcol-showblocktitle">
+        <input type="radio" id="toggleShowBlockTitle0" class="toolbox-toggle" data-action="showBlockTitle" name="toggleShowBlockTitle" value="0"/>
+        <label for="toggleShowBlockTitle0"><?php print t('No') ?></label>
+        <input type="radio" id="toggleShowBlockTitle1" class="toolbox-toggle" data-action="showBlockTitle" name="toggleShowBlockTitle" value="1" checked="checked"/>
+        <label for="toggleShowBlockTitle1"><?php print t('Yes') ?></label>
+      </fieldset>
+    </li>
+  </ul>          
+  <ul>
     <li title="<?php print t('Extra class') . ' - ' . t('Add extra class to style megamenu') ?>">
       <label class="hasTip"><?php print t('Extra class') ?></label>
       <fieldset class="">
