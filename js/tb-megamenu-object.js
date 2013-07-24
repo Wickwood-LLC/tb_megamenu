@@ -433,15 +433,19 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     $.ajax({
       type: "POST",
       url: Drupal.settings.basePath + "admin/structure/tb-megamenu/request",
-      data: { 'action': 'load', 'menu_name': options['menu_name']}
-    }).done(function( msg ) {
-      $('#tb-megamenu-admin-mm-container').html(msg).megamenuAdmin({'menu_name': options['menu_name']});
-      $('#tb-megamenu-admin-mm-tb #toolbox-loading').hide();
-      $('#tb-megamenu-admin-mm-tb #toolbox-message').html(Drupal.t("All unsaved changed has been reseted!")).show();
-      window.setTimeout(function() {
-        $('#tb-megamenu-admin-mm-tb #toolbox-message').html("").hide();
-      }, 5000);
-      Drupal.TBMegaMenu.releaseAjax();
+      data: { 'action': 'load', 'menu_name': options['menu_name']},
+      complete: function( msg ) {
+        $('#tb-megamenu-admin-mm-container').html(msg.response).megamenuAdmin({'menu_name': options['menu_name']});
+        $('#tb-megamenu-admin-mm-container').find('.mega-inner').children('span.close').click(function() {
+          $(this).parent().html("");
+        });        
+        $('#tb-megamenu-admin-mm-tb #toolbox-loading').hide();
+        $('#tb-megamenu-admin-mm-tb #toolbox-message').html(Drupal.t("All unsaved changed has been reseted!")).show();
+        window.setTimeout(function() {
+          $('#tb-megamenu-admin-mm-tb #toolbox-message').html("").hide();
+        }, 5000);
+        Drupal.TBMegaMenu.releaseAjax();
+      }
     });
   }
 
@@ -524,14 +528,15 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     $.ajax({
       type: "POST",
       url: Drupal.settings.basePath + "admin/structure/tb-megamenu/request",
-      data: {'action': 'save', 'menu_name': options['menu_name'], 'menu_config': JSON.stringify(menu_config), 'block_config': JSON.stringify(block_config)}
-    }).done(function( msg ) {
-      $('#tb-megamenu-admin-mm-tb #toolbox-loading').hide();
-      $('#tb-megamenu-admin-mm-tb #toolbox-message').html(Drupal.t("Saved config sucessfully!")).show();
-      window.setTimeout(function() {
-        $('#tb-megamenu-admin-mm-tb #toolbox-message').html("").hide();
-      }, 5000);
-      Drupal.TBMegaMenu.releaseAjax();
+      data: {'action': 'save', 'menu_name': options['menu_name'], 'menu_config': JSON.stringify(menu_config), 'block_config': JSON.stringify(block_config)},
+      complete: function( msg ) {
+        $('#tb-megamenu-admin-mm-tb #toolbox-loading').hide();
+        $('#tb-megamenu-admin-mm-tb #toolbox-message').html(Drupal.t("Saved config sucessfully!")).show();
+        window.setTimeout(function() {
+          $('#tb-megamenu-admin-mm-tb #toolbox-message').html("").hide();
+        }, 5000);
+        Drupal.TBMegaMenu.releaseAjax();
+      }
     });
   }
 
@@ -797,20 +802,21 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
           type: "POST",
           url: Drupal.settings.basePath + "admin/structure/tb-megamenu/request",
           data: data,
-        }).done(function( msg ) {
-          var resp = $.parseJSON(msg);
-          var content = resp.content ? resp.content : "";
-          var close_button = $('<span class="close" title="' + Drupal.t("Remove this block") + '">X</span>');
-          var id = resp.id ? resp.id : "";
-          var currentElement = $("#" + id);
-          if(currentElement.length) {
-            currentElement.children('.mega-inner').html("").append(close_button).append($(content)).find(':input').removeAttr('name');
-            currentElement.children('.mega-inner').children('span.close').click(function() {
-              $(this).parent().html("");
-            });
+          complete: function( msg ) {
+            var resp = $.parseJSON(msg.response);
+            var content = resp.content ? resp.content : "";
+            var close_button = $('<span class="close icon-remove" title="' + Drupal.t("Remove this block") + '">&nbsp;</span>');
+            var id = resp.id ? resp.id : "";
+            var currentElement = $("#" + id);
+            if(currentElement.length) {
+              currentElement.children('.mega-inner').html("").append(close_button).append($(content)).find(':input').removeAttr('name');
+              currentElement.children('.mega-inner').children('span.close').click(function() {
+                $(this).parent().html("");
+              });
+            }
+            $('#tb-megamenu-admin-mm-tb #toolbox-loading').hide();
+            Drupal.TBMegaMenu.releaseAjax();
           }
-          $('#tb-megamenu-admin-mm-tb #toolbox-loading').hide();
-          Drupal.TBMegaMenu.releaseAjax();
         });
       break;
     case 'load':
