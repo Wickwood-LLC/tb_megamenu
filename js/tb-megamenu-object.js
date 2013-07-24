@@ -435,7 +435,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
       url: Drupal.settings.basePath + "admin/structure/tb-megamenu/request",
       data: { 'action': 'load', 'menu_name': options['menu_name']},
       complete: function( msg ) {
-        $('#tb-megamenu-admin-mm-container').html(msg.response).megamenuAdmin({'menu_name': options['menu_name']});
+        $('#tb-megamenu-admin-mm-container').html(msg.responseText).megamenuAdmin({'menu_name': options['menu_name']});
         $('#tb-megamenu-admin-mm-container').find('.mega-inner').children('span.close').click(function() {
           $(this).parent().html("");
         });        
@@ -803,7 +803,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
           url: Drupal.settings.basePath + "admin/structure/tb-megamenu/request",
           data: data,
           complete: function( msg ) {
-            var resp = $.parseJSON(msg.response);
+            var resp = $.parseJSON(msg.responseText);
             var content = resp.content ? resp.content : "";
             var close_button = $('<span class="close icon-remove" title="' + Drupal.t("Remove this block") + '">&nbsp;</span>');
             var id = resp.id ? resp.id : "";

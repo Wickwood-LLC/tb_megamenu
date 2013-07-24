@@ -182,19 +182,35 @@ function tb_megamenu_load_block($block_key) {
   return isset($blocks[$block_key]) ? $blocks[$block_key] : NULL;
 }
 
-function tb_megamenu_sync_config_all($items, &$menu_config) {
+function tb_megamenu_sync_config_all($items, &$menu_config, $section) {
   foreach($items as $item) {
     $mlid = $item['link']['mlid'];
     $item_config = isset($menu_config[$mlid]) ? $menu_config[$mlid] : array();
     if(!$item['link']['hidden'] && (!empty($item['below']) || !empty($item_config))) {
-      tb_megamenu_sync_config($item['below'], $item_config, $mlid);
+      tb_megamenu_sync_config($item['below'], $item_config, $mlid, $section);
       $menu_config[$mlid] = $item_config;
-      tb_megamenu_sync_config_all($item['below'], $menu_config);
+      tb_megamenu_sync_config_all($item['below'], $menu_config, $section);
     }
   }
 }
 
-function tb_megamenu_sync_config($items, &$item_config, $_mlid) {
+function tb_megamenu_block_content_exists($block_key, $section) {
+  $block = tb_megamenu_load_block($block_key);
+  if($block) {
+    $module = $block->module;
+    $delta = $block->delta;
+    $content = module_invoke($module, 'block_view', $delta);
+    if(empty($content) && $section == 'backend') {
+      return true;
+    }
+    elseif($content) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function tb_megamenu_sync_config($items, &$item_config, $_mlid, $section) {
   if(empty($item_config['rows_content'])) {
     $item_config['rows_content'] = array(0 => array(0 => array('col_content' => array(), 'col_config' => array()))); 
     foreach($items as $item) {
@@ -235,6 +251,17 @@ function tb_megamenu_sync_config($items, &$item_config, $_mlid) {
               if(empty($item_config['rows_content'][$i])) {
                 unset($item_config['rows_content'][$i]);
               }
+            }
+          }
+          else {
+            if(!tb_megamenu_block_content_exists($tb_item['block_key'], $section)) {
+              unset($item_config['rows_content'][$i][$j]['col_content'][$k]);
+              if(empty($item_config['rows_content'][$i][$j]['col_content'])) {
+                unset($item_config['rows_content'][$i][$j]);
+              }
+              if(empty($item_config['rows_content'][$i])) {
+                unset($item_config['rows_content'][$i]);
+              }              
             }
           }
         }

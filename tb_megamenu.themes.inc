@@ -15,7 +15,7 @@ function template_preprocess_tb_megamenu(&$vars) {
   $trail = tb_megamenu_build_page_trail($items_page);
   $menu_config = tb_megamenu_get_menu_config($menu_name);
   $block_config = tb_megamenu_get_block_config($menu_name);
-  tb_megamenu_sync_config_all($items, $menu_config);
+  tb_megamenu_sync_config_all($items, $menu_config, $vars['section']);
   tb_megamenu_edit_block_config($block_config);
   $vars['classes_array'][] = "tb-megamenu-" . str_replace('_', '-', $menu_name);
   if($vars['section'] == 'frontend' && $block_config['style'] != '') {
@@ -297,6 +297,9 @@ function template_preprocess_tb_megamenu_block(&$vars) {
     }
     elseif($content) {
       $vars['content'] = theme("block", array('elements' => array('content' => $content['content'], '#children' => (is_array($content['content']) ? drupal_render($content['content']) : $content['content']), '#block' => $block)));
+    }
+    else {
+      $vars['content'] = NULL;
     }
     $vars['classes_array'][] = "tb-block";
     $vars['classes_array'][] = "tb-megamenu-block";
