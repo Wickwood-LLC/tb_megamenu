@@ -58,6 +58,13 @@ function tb_megamenu_configure_form($form, &$form_state, $menu_names = array()) 
   else {
     drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/chosen.jquery.js');
   }  
+  drupal_add_js('
+    (function ($) {
+      Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
+      Drupal.TBMegaMenu.ajax_link = "' . (variable_get('clean_url', 0) ? '' : '?q=') . '";
+    })(jQuery);
+  ', 'inline');    
+  
   drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/tb-megamenu-backend.js');
   drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/tb-megamenu-object.js');
   if(!empty($menu_names)) {

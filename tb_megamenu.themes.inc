@@ -203,6 +203,7 @@ function template_preprocess_tb_megamenu_row(&$vars) {
     ));
   }
   $vars['columns'] = implode("\n", $cols);
+  $vars['classes_array'][] = 'row-fluid';  
 }
 
 function template_preprocess_tb_megamenu_column(&$vars) {
