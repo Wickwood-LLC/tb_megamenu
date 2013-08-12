@@ -19,7 +19,10 @@ function template_preprocess_tb_megamenu(&$vars) {
   tb_megamenu_edit_block_config($block_config);
   $vars['classes_array'][] = "tb-megamenu-" . str_replace('_', '-', $menu_name);
   if($vars['section'] == 'frontend' && $block_config['style'] != '') {
-    drupal_add_css(drupal_get_path("module", "tb_megamenu") . "/css/styles/" . $block_config['style'] . ".css");
+    drupal_add_css(drupal_get_path("module", "tb_megamenu") . "/css/styles/" . $block_config['style'] . ".css", array(
+        'group' => CSS_SYSTEM,
+        'basename' => "tb-megamenu-style-" . $block_config['style'],
+      ));
     $vars['classes_array'][] = "style-" . $block_config['style'];
   }
   if($block_config['animation'] != 'none') {
