@@ -16,7 +16,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
       if(!isTouch){
         $(document).ready(function($){
           var mm_duration = 0;
-          $('.t3-megamenu').each (function(){
+          $('.tb-megamenu').each (function(){
             if ($(this).data('duration')) {
               mm_duration = $(this).data('duration');
             }
@@ -29,7 +29,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
               clearTimeout ($this.data('animatingTimeout'));
               $this.data('animatingTimeout', setTimeout(function(){$this.removeClass ('animating')}, mm_timeout));
               clearTimeout ($this.data('hoverTimeout'));
-              $this.data('hoverTimeout', setTimeout(function(){$this.addClass ('open')}, 100));
+              $this.data('hoverTimeout', setTimeout(function(){$this.addClass ('open')}, 100));  
             } else {
               clearTimeout ($this.data('hoverTimeout'));
               $this.data('hoverTimeout', 
