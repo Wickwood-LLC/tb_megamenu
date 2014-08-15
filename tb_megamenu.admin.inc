@@ -36,12 +36,10 @@ function theme_tb_megamenu_admin_settings($variables) {
 }
 
 function tb_megamenu_configure_form($form, &$form_state, $menu_names = array()) {
-  if(module_exists('fontawesome') && file_exists(libraries_get_path('fontawesome') . '/css/fontawesome.css')) {
+  if(module_exists('fontawesome') && file_exists(libraries_get_path('fontawesome') . '/css/font-awesome.css')) {
     tb_megamenu_add_css(libraries_get_path('fontawesome') . '/css/font-awesome.css');
   }
-  else {
-    tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/fonts/font-awesome/css/font-awesome.css');
-  }
+  
   if(module_exists('chosen') && file_exists(libraries_get_path('chosen') . '/chosen/chosen.css')) {
     tb_megamenu_add_css(libraries_get_path('chosen') . '/chosen/chosen.css');
   }

@@ -224,12 +224,10 @@ function tb_megamenu_block_view($delta = 0) {
   static $added_js_css = false;
   if(!$added_js_css) {
     $added_js_css = true;
-    if(module_exists('fontawesome') && file_exists(libraries_get_path('fontawesome') . '/css/fontawesome.css')) {
+    if(module_exists('fontawesome') && file_exists(libraries_get_path('fontawesome') . '/css/font-awesome.css')) {
       tb_megamenu_add_css(libraries_get_path('fontawesome') . '/css/font-awesome.css');
     }
-    else {
-      tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/fonts/font-awesome/css/font-awesome.css');
-    }
+    
     tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/bootstrap.css');
     tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/base.css');
     tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/default.css');
