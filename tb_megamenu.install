@@ -1,12 +1,4 @@
 <?php
-
-function tb_megamenu_install() {
-}
-
-function tb_megamenu_uninstall() {
-  drupal_uninstall_schema('tb_megamenu');
-}
-
 /**
  * Implementation of hook_schema().
  */
@@ -28,9 +20,39 @@ function tb_megamenu_schema() {
         'type' => 'text',
         'not null' => FALSE,
       ),
+      'language' => array(
+        'type' => 'varchar',
+        'length' => '12',
+        'not null' => TRUE,
+        'default' => '',
+      ),
     ),
-    'primary key' => array('menu_name'),
+    'primary key' => array('menu_name', 'language'),
   );
 
   return $schema;
+}
+
+/**
+ * Add language field
+ */
+function tb_megamenu_update_7101(&$sandbox) {
+  // remove existing primary key
+  db_query("ALTER TABLE {tb_megamenus} DROP primary key");
+
+  $field = array(
+    'type' => 'varchar',
+    'length' => 12,
+    'not null' => TRUE,
+    'default' => '',
+  );
+  $keys_new = array(
+    'primary key' => array(
+      'menu_name',
+      'language',
+    ),
+  );
+  db_add_field('tb_megamenus', 'language', $field, $keys_new);
+  // set all existing menus to English
+  db_query("UPDATE {tb_megamenus} SET language = 'en'");
 }

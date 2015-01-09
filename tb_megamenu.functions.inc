@@ -93,12 +93,14 @@ function tb_megamenu_get_megamenus() {
 }
 
 function tb_megamenu_get_menu($menu_name) {
+  global $language;
   $query = db_select('menu_custom', 'm');
   $query->leftJoin('tb_megamenus', 't', 't.menu_name = m.menu_name');
   $query->fields('m');
   $query->addField('t', 'menu_config');
   $query->addField('t', 'block_config');
   $query->condition('m.menu_name', $menu_name);
+  $query->condition('t.language', $language->language);
   return $query->execute()->fetchObject();
 }
 

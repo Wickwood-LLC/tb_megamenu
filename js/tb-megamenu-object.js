@@ -432,7 +432,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     $('#tb-megamenu-admin-mm-tb #toolbox-loading').show();
     $.ajax({
       type: "POST",
-      url: Drupal.settings.basePath + Drupal.TBMegaMenu.ajax_link + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
+      url: Drupal.settings.basePath + Drupal.settings.pathPrefix + Drupal.TBMegaMenu.ajax_link + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
       data: { 'action': 'load', 'menu_name': options['menu_name']},
       complete: function( msg ) {
         $('#tb-megamenu-admin-mm-container').html(msg.responseText).megamenuAdmin({'menu_name': options['menu_name']});
@@ -527,7 +527,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     $('#tb-megamenu-admin-mm-tb #toolbox-loading').show();
     $.ajax({
       type: "POST",
-      url: Drupal.settings.basePath + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
+      url: Drupal.settings.basePath + Drupal.settings.pathPrefix + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
       data: {'action': 'save', 'menu_name': options['menu_name'], 'menu_config': JSON.stringify(menu_config), 'block_config': JSON.stringify(block_config)},
       complete: function( msg ) {
         $('#tb-megamenu-admin-mm-tb #toolbox-loading').hide();
@@ -801,7 +801,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     case 'load_block':
         $.ajax({
           type: "POST",
-          url: Drupal.settings.basePath + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
+          url: Drupal.settings.basePath + Drupal.settings.pathPrefix + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
           data: data,
           complete: function( msg ) {
             var resp = $.parseJSON(msg.responseText);
