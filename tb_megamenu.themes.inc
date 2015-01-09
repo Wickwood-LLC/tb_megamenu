@@ -133,6 +133,7 @@ function template_preprocess_tb_megamenu_item(&$vars) {
 
   if(isset($trail[$mlid])) {
     $vars['classes_array'][] = 'active';
+    $vars['classes_array'][] = $vars['a_classes'][] = 'active-trail';
   }
   $vars['attributes_array']['data-id'] = $mlid;
   $vars['attributes_array']['data-level'] = $level;
