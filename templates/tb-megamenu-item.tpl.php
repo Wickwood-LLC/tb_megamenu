@@ -3,7 +3,7 @@
     <?php if(!empty($item_config['xicon'])) : ?>
       <i class="<?php print $item_config['xicon'];?>"></i>
     <?php endif;?>    
-    <?php print t($item['link']['link_title']);?>
+    <?php print t($item['link']['title']);?>
     <?php if($submenu && $block_config['auto-arrow']) :?>
       <span class="caret"></span>
     <?php endif;?>
