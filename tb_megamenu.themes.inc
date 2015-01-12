@@ -85,6 +85,7 @@ function template_preprocess_tb_megamenu_item(&$vars) {
   $item = $vars['item'];
   $mlid = $item['link']['mlid'];
   $trail = $vars['trail'];
+  $link_attributes = array();
   $menu_config = $vars['menu_config'];
   $item_config = isset($menu_config[$mlid]['item_config']) ? $menu_config[$mlid]['item_config'] : array();
   tb_megamenu_edit_item_config($item_config);
@@ -119,10 +120,10 @@ function template_preprocess_tb_megamenu_item(&$vars) {
 
   if($item_config['group'] && $vars['submenu']) {
     $vars['classes_array'][] = "mega-group";
-    $vars['a_classes'][] = 'mega-group-title';
+    $link_attributes['class'][] = 'mega-group-title';
   }
   elseif($vars['submenu'] && !$item_config['hidesub']) {
-    $vars['a_classes'][] = 'dropdown-toggle';
+    $link_attributes['class'][] = 'dropdown-toggle';
     if($level == 1) {
       $vars['classes_array'][] = 'dropdown';
     }
@@ -131,6 +132,14 @@ function template_preprocess_tb_megamenu_item(&$vars) {
     }
   }
 
+  $vars['item']['link']['#attributes'] = $link_attributes;
+  if (isset($item['link']['localized_options']['attributes']) && !empty($item['link']['localized_options']['attributes'])) {
+    if (!$item['link']['localized_options']['attributes']['title']) {
+      $item['link']['localized_options']['attributes']['title'] = $item['link']['title'];
+    }
+    $vars['item']['link']['#attributes'] += $item['link']['localized_options']['attributes'];
+  }
+  
   if(isset($trail[$mlid])) {
     $vars['classes_array'][] = 'active';
     $vars['classes_array'][] = $vars['a_classes'][] = 'active-trail';

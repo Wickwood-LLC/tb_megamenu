@@ -1,5 +1,5 @@
 <li <?php print $attributes;?> class="<?php print $classes;?>">
-  <a href="<?php print in_array($item['link']['href'], array('<nolink>')) ? "#" : url($item['link']['href']);?>" class="<?php print implode(" ", $a_classes);?>">
+  <a href="<?php print in_array($item['link']['href'], array('<nolink>')) ? "#" : url($item['link']['href'], $item['link']['options']);?>" <?php echo drupal_attributes($item['link']['#attributes']); ?>>
     <?php if(!empty($item_config['xicon'])) : ?>
       <i class="<?php print $item_config['xicon'];?>"></i>
     <?php endif;?>    
