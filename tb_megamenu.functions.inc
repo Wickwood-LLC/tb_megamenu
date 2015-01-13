@@ -1,5 +1,25 @@
 <?php
 
+function tb_megamenu_check_library($module, $name) {
+  $files = array();
+  if ($library = libraries_detect($name)) {
+    if (!empty($library['files']['css'])) {
+      $files['css'] = libraries_get_path($name) . '/' . key($library['files']['css']);
+    }
+    if (!empty($library['js'])) {
+      $files['js'] = libraries_get_path($name) . '/' . key($library['files']['js']);
+    }
+  } elseif ($library = drupal_get_library($module, $name)) {
+    if (!empty($library['css'])) {
+      $files['css'] = key($library['css']);
+    }
+    if (!empty($library['js'])) {
+      $files['js'] = key($library['js']);
+    }
+  }
+  return !empty($files) ? $files : FALSE;
+}
+
 function tb_megamenu_add_css($file) {
   $path_info = pathinfo($file);
   if ($path_info['extension'] == 'less') {
