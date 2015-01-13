@@ -7,7 +7,6 @@ core = 7.x
 dependencies[] = block
 dependencies[] = libraries
 dependencies[] = chosen
-dependencies[] = fontawesome
 
 files[] = tb_megamenu.functions.inc
 files[] = tb_megamenu.themes.inc
