@@ -4,14 +4,19 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
   Drupal.TBMegaMenu.menuInstance = false;
   Drupal.behaviors.tbMegaMenuAction = {
     attach: function(context) {
-      $('.tb-megamenu-button').click(function() {
-        if(parseInt($(this).parent().children('.nav-collapse').height())) {
-          $(this).parent().children('.nav-collapse').css({height: 0, overflow: 'hidden'});
-        }
-        else {
-          $(this).parent().children('.nav-collapse').css({height: 'auto', overflow: 'visible'});
-        }
+      $('.tb-megamenu-button', context).once('menuIstance', function () {
+        var This = this;
+        $(This).click(function() {
+          if(parseInt($(this).parent().children('.nav-collapse').height())) {
+            $(this).parent().children('.nav-collapse').css({height: 0, overflow: 'hidden'});
+          }
+          else {
+            $(this).parent().children('.nav-collapse').css({height: 'auto', overflow: 'visible'});
+          }
+        });
       });
+      
+      
       var isTouch = 'ontouchstart' in window && !(/hp-tablet/gi).test(navigator.appVersion);
       if(!isTouch){
         $(document).ready(function($){
