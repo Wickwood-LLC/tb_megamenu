@@ -133,7 +133,7 @@ function template_preprocess_tb_megamenu_item(&$vars) {
   }
 
   $vars['item']['link']['#attributes'] = $link_attributes;
-  if (isset($item['link']['localized_options']['attributes']) && !empty($item['link']['localized_options']['attributes'])) {
+  if (!empty($item['link']['localized_options']['attributes'])) {
     if (!$item['link']['localized_options']['attributes']['title']) {
       $item['link']['localized_options']['attributes']['title'] = $item['link']['title'];
     }

@@ -2,6 +2,16 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
 
 (function ($) {
   Drupal.TBMegaMenu.menuInstance = false;
+  Drupal.TBMegaMenu.supportedScreens = [980];
+  Drupal.TBMegaMenu.menuResponsive = function () {
+    var windowWidth = window.innerWidth ? window.innerWidth : $(window).width();
+    if (windowWidth < Druppal.TBMegaMenu.supportedScreens[0]) {
+      $('.tb-megamenu').children('.nav-collapse').addClass('collapse');
+    } else {
+      $('.tb-megamenu').children('.nav-collapse').removeClass('collapse');
+    }
+  };
+  Drupal.TBResponsive.oldWindowWidth = 0;
   Drupal.behaviors.tbMegaMenuAction = {
     attach: function(context) {
       $('.tb-megamenu-button', context).once('menuIstance', function () {
@@ -58,7 +68,15 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
           });
         });
       }
-    }
+      
+      $(window).resize(function() {
+        var windowWidth = window.innerWidth ? window.innerWidth : $(window).width();
+        if(windowWidth != Drupal.TBResponsive.oldWindowWidth){
+          Drupal.TBResponsive.oldWindowWidth = windowWidth;
+          Drupal.TBResponsive.menuResponsive();
+        }
+      });
+    },
   }
 })(jQuery);
 
