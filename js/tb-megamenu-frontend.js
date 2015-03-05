@@ -1,21 +1,28 @@
 Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
 
 (function ($) {
-  Drupal.TBMegaMenu.menuInstance = false;
+  Drupal.TBMegaMenu.oldWindowWidth = 0;
+  Drupal.TBMegaMenu.displayedMenuMobile = false;
   Drupal.TBMegaMenu.supportedScreens = [980];
   Drupal.TBMegaMenu.menuResponsive = function () {
     var windowWidth = window.innerWidth ? window.innerWidth : $(window).width();
+    var navCollapse = $('.tb-megamenu').children('.nav-collapse');
     if (windowWidth < Drupal.TBMegaMenu.supportedScreens[0]) {
-      $('.tb-megamenu').children('.nav-collapse').addClass('collapse');
+      navCollapse.addClass('collapse');
+      if (Drupal.TBMegaMenu.displayedMenuMobile) {
+        navCollapse.css({height: 'auto', overflow: 'visible'});
+      } else {
+        navCollapse.css({height: 0, overflow: 'hidden'});
+      }
     } else {
-      var navCollapse = $('.tb-megamenu').children('.nav-collapse');
+      // If width of window is greater than 980 (supported screen).
       navCollapse.removeClass('collapse');
       if (navCollapse.height() <= 0) {
         navCollapse.css({height: 'auto', overflow: 'visible'});
       }
     }
   };
-  Drupal.TBMegaMenu.oldWindowWidth = 0;
+  
   Drupal.behaviors.tbMegaMenuAction = {
     attach: function(context) {
       $('.tb-megamenu-button', context).once('menuIstance', function () {
@@ -23,9 +30,11 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
         $(This).click(function() {
           if(parseInt($(this).parent().children('.nav-collapse').height())) {
             $(this).parent().children('.nav-collapse').css({height: 0, overflow: 'hidden'});
+            Drupal.TBMegaMenu.displayedMenuMobile = false;
           }
           else {
             $(this).parent().children('.nav-collapse').css({height: 'auto', overflow: 'visible'});
+            Drupal.TBMegaMenu.displayedMenuMobile = true;
           }
         });
       });
