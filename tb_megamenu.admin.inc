@@ -45,6 +45,10 @@ function tb_megamenu_configure_form($form, &$form_state, $menu_names = array()) 
   $lib_chosen_existed = module_exists('chosen') && $lib_chosen;
   if($lib_chosen_existed && !empty($lib_chosen['css'])) {
     tb_megamenu_add_css($lib_chosen['css']);
+  } 
+  else { 
+    tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/chosen/chosen.min.css');
+    drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/chosen/chosen.jquery.min.js');
   }
   tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/bootstrap.css');
   tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/base.css');

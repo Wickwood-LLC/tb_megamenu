@@ -275,7 +275,7 @@ function template_preprocess_tb_megamenu_column(&$vars) {
 
 function template_preprocess_tb_megamenu_subnav(&$vars) {
   $col = $vars['col'];
-  $items = $vars['items'];
+//  $items = $vars['items'];
   $level = $vars['level'];
   $lis = array();
   foreach ($col as $tb_item) {
@@ -342,7 +342,7 @@ function template_preprocess_tb_megamenu_backend(&$vars) {
   $vars['edit_links'] = base_path() . "admin/structure/menu/manage/$menu_name";
   $vars['edit_menu'] = base_path() . "admin/structure/menu/manage/$menu_name/edit";
 
-  $js = 'Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
+  $js_inline = 'Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
   (function ($) {
     Drupal.behaviors.tbMegaMenuAction = {
       attach: function(context) {
@@ -351,5 +351,5 @@ function template_preprocess_tb_megamenu_backend(&$vars) {
     }
   })(jQuery);
   ';
-  drupal_add_js($js, array('type' => 'inline'));
+  drupal_add_js($js_inline, array('type' => 'inline'));
 }
