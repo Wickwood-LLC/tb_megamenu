@@ -90,7 +90,9 @@ function template_preprocess_tb_megamenu_item(&$vars) {
   $item_config = isset($menu_config[$mlid]['item_config']) ? $menu_config[$mlid]['item_config'] : array();
   tb_megamenu_edit_item_config($item_config);
   $vars['item_config'] = $item_config;
-  if (isset($menu_config[$mlid]['rows_content']) && !empty($menu_config[$mlid]['rows_content']) && ($vars['section'] == 'backend' || !$item_config['hidesub'])) {
+  if (!empty($menu_config[$mlid]['rows_content']) && 
+      ($vars['section'] == 'backend' || !$item_config['hidesub'])) {
+    
     $vars['submenu'] = theme('tb_megamenu_submenu', array(
       'menu_name' => $vars['menu_name'],
       'parent' => $item,
