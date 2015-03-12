@@ -3,9 +3,9 @@ include_once drupal_get_path('module', 'tb_megamenu') . '/tb_megamenu.functions.
 include_once drupal_get_path('module', 'tb_megamenu') . '/tb_megamenu.themes.inc';
 include_once drupal_get_path('module', 'tb_megamenu') . '/tb_megamenu.admin.inc';
 
-function tb_megamenu_init() {
-}
-
+/**
+ * Implements hook_menu().
+ */
 function tb_megamenu_menu() {
   $items['admin/structure/tb-megamenu/request'] = array(
     'title' => 'Request',
@@ -44,6 +44,9 @@ function tb_megamenu_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_permission().
+ */
 function tb_megamenu_permission() {
   return array(
     'administer tb_megamenu' => array(
@@ -52,6 +55,15 @@ function tb_megamenu_permission() {
   );
 }
 
+/**
+ * Implements hook_theme().
+ * 
+ * @param type $existing
+ * @param type $type
+ * @param type $theme
+ * @param type $path
+ * @return string
+ */
 function tb_megamenu_theme($existing, $type, $theme, $path) {
   $items = array();
   $items['tb_megamenu'] = array(
@@ -242,7 +254,7 @@ function tb_megamenu_block_view($delta = 0) {
 }
 
 /*
- * Implementation of hook_block_info()
+ * Implements hook_block_info()
  */
 function tb_megamenu_block_info() {
   $menus = tb_megamenu_get_megamenus();
@@ -259,6 +271,9 @@ function tb_megamenu_menu_name_load($tb_megamenu_menu_name) {
   return array($tb_megamenu_menu_name);
 }
 
+/**
+ * Implements hook_theme_registry_alter().
+ */
 function tb_megamenu_theme_registry_alter(&$theme_registry) {
   if(isset($theme_registry['tb_megamenu_submenu'])) {
     $submenu_registry = $theme_registry['tb_megamenu_submenu'];
@@ -275,21 +290,25 @@ function tb_megamenu_theme_registry_alter(&$theme_registry) {
   }
 }
 
+/**
+ * Implements hook_block_view_alter().
+ */
 function tb_megamenu_block_view_alter(&$data, $block) {
   if (isset($data['content']) && is_array($data['content']) && $block->module == 'tb_megamenu') {
-    $contextual_links = array(
+    $data['content']['#contextual_links']['menu_config'] = array(
       'admin/structure/menu/manage',
       array($block->delta),
     );
 
-    $data['content']['#contextual_links']['menu_config'] = $contextual_links;
-
-    $contextual_links = array(
-      'admin/structure/tb-megamenu',
-      array($block->delta),
+    $data['content']['#contextual_links']['tb_megamenu_config'] = array(
+      'admin/structure/tb-megamenu', array($block->delta),
     );
-
-    $data['content']['#contextual_links']['tb_megamenu_config'] = $contextual_links;
-    
   }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tb_megamenu_form_menu_overview_form_alter(&$form, &$form_state) {
+  $form['#submit'][] = 'tb_megamenu_update_megamenus';
 }
