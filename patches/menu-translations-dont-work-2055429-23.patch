@@ -1,0 +1,13 @@
+diff --git a/templates/tb-megamenu-item.tpl.php b/templates/tb-megamenu-item.tpl.php
+index 086dd31..41748c1 100644
+--- a/templates/tb-megamenu-item.tpl.php
++++ b/templates/tb-megamenu-item.tpl.php
+@@ -3,7 +3,7 @@
+     <?php if(!empty($item_config['xicon'])) : ?>
+       <i class="<?php print $item_config['xicon'];?>"></i>
+     <?php endif;?>    
+-    <?php print t($item['link']['link_title']);?>
++    <?php print t($item['link']['title']);?>
+     <?php if($submenu && $block_config['auto-arrow']) :?>
+       <span class="caret"></span>
+     <?php endif;?>

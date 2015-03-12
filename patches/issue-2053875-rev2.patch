@@ -1,0 +1,49 @@
+diff --git a/tb_megamenu.themes.inc b/tb_megamenu.themes.inc
+index d9fd93b..28633de 100644
+--- a/tb_megamenu.themes.inc
++++ b/tb_megamenu.themes.inc
+@@ -86,6 +86,7 @@ function template_preprocess_tb_megamenu_item(&$vars) {
+   $mlid = $item['link']['mlid'];
+   $trail = $vars['trail'];
+   $menu_config = $vars['menu_config'];
++  $link_attributes = array();
+   $item_config = isset($menu_config[$mlid]['item_config']) ? $menu_config[$mlid]['item_config'] : array();
+   tb_megamenu_edit_item_config($item_config);
+   $vars['item_config'] = $item_config;
+@@ -119,10 +120,10 @@ function template_preprocess_tb_megamenu_item(&$vars) {
+ 
+   if($item_config['group'] && $vars['submenu']) {
+     $vars['classes_array'][] = "mega-group";
+-    $vars['a_classes'][] = 'mega-group-title';
++    $link_attributes['class'][] = 'mega-group-title';
+   }
+   elseif($vars['submenu'] && !$item_config['hidesub']) {
+-    $vars['a_classes'][] = 'dropdown-toggle';
++    $link_attributes['class'][] = 'dropdown-toggle';
+     if($level == 1) {
+       $vars['classes_array'][] = 'dropdown';
+     }
+@@ -131,6 +132,12 @@ function template_preprocess_tb_megamenu_item(&$vars) {
+     }
+   }
+ 
++  // Add the link attributes
++  $vars['item']['link']['#attributes'] = $link_attributes;
++  if (isset($item['link']['localized_options']['attributes']) && !empty($item['link']['localized_options']['attributes'])) {
++    $vars['item']['link']['#attributes'] += $item['link']['localized_options']['attributes'];
++  }
++
+   if(isset($trail[$mlid])) {
+     $vars['classes_array'][] = 'active';
+   }
+diff --git a/templates/tb-megamenu-item.tpl.php b/templates/tb-megamenu-item.tpl.php
+index 086dd31..b69399e 100644
+--- a/templates/tb-megamenu-item.tpl.php
++++ b/templates/tb-megamenu-item.tpl.php
+@@ -1,5 +1,5 @@
+ <li <?php print $attributes;?> class="<?php print $classes;?>">
+-  <a href="<?php print in_array($item['link']['href'], array('<nolink>')) ? "#" : url($item['link']['href']);?>" class="<?php print implode(" ", $a_classes);?>">
++  <a href="<?php print in_array($item['link']['href'], array('<nolink>')) ? "#" : url($item['link']['href'], $item['link']['options']);?>" <?php echo drupal_attributes($item['link']['#attributes']); ?>>
+     <?php if(!empty($item_config['xicon'])) : ?>
+       <i class="<?php print $item_config['xicon'];?>"></i>
+     <?php endif;?>

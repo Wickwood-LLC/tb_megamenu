@@ -1,0 +1,19 @@
+diff --git a/tb_megamenu.themes.inc b/tb_megamenu.themes.inc
+index 9fb9c07..43865a7 100644
+--- a/tb_megamenu.themes.inc
++++ b/tb_megamenu.themes.inc
+@@ -131,6 +132,14 @@ function template_preprocess_tb_megamenu_item(&$vars) {
+     }
+   }
+ 
++  $vars['item']['link']['#attributes'] = $link_attributes;
++  if (isset($item['link']['localized_options']['attributes']) && !empty($item['link']['localized_options']['attributes'])) {
++    if (!$item['link']['localized_options']['attributes']['title']) {
++      $item['link']['localized_options']['attributes']['title'] = $item['link']['title'];
++    }
++    $vars['item']['link']['#attributes'] += $item['link']['localized_options']['attributes'];
++  }
++  
+   if(isset($trail[$mlid])) {
+     $vars['classes_array'][] = 'active';
+     $vars['classes_array'][] = $vars['a_classes'][] = 'active-trail';

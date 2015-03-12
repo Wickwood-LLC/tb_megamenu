@@ -1,0 +1,120 @@
+diff --git a/js/tb-megamenu-object.js b/js/tb-megamenu-object.js
+index 6bb92a0..a3691ab 100644
+--- a/js/tb-megamenu-object.js
++++ b/js/tb-megamenu-object.js
+@@ -432,7 +432,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
+     $('#tb-megamenu-admin-mm-tb #toolbox-loading').show();
+     $.ajax({
+       type: "POST",
+-      url: Drupal.settings.basePath + Drupal.TBMegaMenu.ajax_link + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
++      url: Drupal.settings.basePath + Drupal.settings.pathPrefix + Drupal.TBMegaMenu.ajax_link + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
+       data: { 'action': 'load', 'menu_name': options['menu_name']},
+       complete: function( msg ) {
+         $('#tb-megamenu-admin-mm-container').html(msg.responseText).megamenuAdmin({'menu_name': options['menu_name']});
+@@ -527,7 +527,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
+     $('#tb-megamenu-admin-mm-tb #toolbox-loading').show();
+     $.ajax({
+       type: "POST",
+-      url: Drupal.settings.basePath + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
++      url: Drupal.settings.basePath + Drupal.settings.pathPrefix + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
+       data: {'action': 'save', 'menu_name': options['menu_name'], 'menu_config': JSON.stringify(menu_config), 'block_config': JSON.stringify(block_config)},
+       complete: function( msg ) {
+         $('#tb-megamenu-admin-mm-tb #toolbox-loading').hide();
+@@ -801,7 +801,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
+     case 'load_block':
+         $.ajax({
+           type: "POST",
+-          url: Drupal.settings.basePath + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
++          url: Drupal.settings.basePath + Drupal.settings.pathPrefix + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
+           data: data,
+           complete: function( msg ) {
+             var resp = $.parseJSON(msg.responseText);
+diff --git a/tb_megamenu.ajax.inc b/tb_megamenu.ajax.inc
+index a82a6d5..4c91bda 100644
+--- a/tb_megamenu.ajax.inc
++++ b/tb_megamenu.ajax.inc
+@@ -8,16 +8,17 @@ function tb_megamenu_request() {
+       print($block['content']['#markup']);
+       break;
+     case 'save':
++      global $language;
+       $menu_config = isset($_POST['menu_config']) ? $_POST['menu_config'] : NULL;
+       $block_config = isset($_POST['block_config']) ? $_POST['block_config'] : NULL;
+       $menu_name = isset($_POST['menu_name']) ? $_POST['menu_name'] : NULL;
+       if($menu_config && $menu_name) {
+-        $tb_megamenu = db_select('tb_megamenus', 't')->fields('t')->condition('menu_name', $menu_name)->execute()->fetchObject();
++        $tb_megamenu = db_select('tb_megamenus', 't')->fields('t')->condition('menu_name', $menu_name)->condition('language', $language->language)->execute()->fetchObject();
+         if($tb_megamenu) {
+-          db_update('tb_megamenus')->fields(array('menu_config' => $menu_config, 'block_config' => $block_config))->condition('menu_name', $menu_name)->execute();
++          db_update('tb_megamenus')->fields(array('menu_config' => $menu_config, 'block_config' => $block_config, 'language' => $language->language))->condition('menu_name', $menu_name)->condition('language', $language->language)->execute();
+         }
+         else {
+-          db_insert('tb_megamenus')->fields(array('menu_name' => $menu_name, 'block_config' => $block_config, 'menu_config' => $menu_config))->execute();
++          db_insert('tb_megamenus')->fields(array('menu_name' => $menu_name, 'block_config' => $block_config, 'menu_config' => $menu_config, 'language' => $language->language))->execute();
+         }
+       }
+       break;
+diff --git a/tb_megamenu.functions.inc b/tb_megamenu.functions.inc
+index 48146d1..1e7d483 100644
+--- a/tb_megamenu.functions.inc
++++ b/tb_megamenu.functions.inc
+@@ -93,12 +93,14 @@ function tb_megamenu_get_megamenus() {
+ }
+ 
+ function tb_megamenu_get_menu($menu_name) {
++  global $language;
+   $query = db_select('menu_custom', 'm');
+   $query->leftJoin('tb_megamenus', 't', 't.menu_name = m.menu_name');
+   $query->fields('m');
+   $query->addField('t', 'menu_config');
+   $query->addField('t', 'block_config');
+   $query->condition('m.menu_name', $menu_name);
++  $query->condition('t.language', $language->language);
+   return $query->execute()->fetchObject();
+ }
+ 
+diff --git a/tb_megamenu.install b/tb_megamenu.install
+index 2192991..536a498 100644
+--- a/tb_megamenu.install
++++ b/tb_megamenu.install
+@@ -28,9 +28,39 @@ function tb_megamenu_schema() {
+         'type' => 'text',
+         'not null' => FALSE,
+       ),
++      'language' => array(
++        'type' => 'varchar',
++        'length' => '12',
++        'not null' => TRUE,
++        'default' => '',
++      ),
+     ),
+-    'primary key' => array('menu_name'),
++    'primary key' => array('menu_name', 'language'),
+   );
+ 
+   return $schema;
+ }
++
++/**
++ * Add language field
++ */
++function tb_megamenu_update_7101(&$sandbox) {
++  // remove existing primary key
++  db_query("ALTER TABLE {tb_megamenus} DROP primary key");
++
++  $field = array(
++    'type' => 'varchar',
++    'length' => 12,
++    'not null' => TRUE,
++    'default' => '',
++  );
++  $keys_new = array(
++    'primary key' => array(
++      'menu_name',
++      'language',
++    ),
++  );
++  db_add_field('tb_megamenus', 'language', $field, $keys_new);
++  // set all existing menus to English
++  db_query("UPDATE {tb_megamenus} SET language = 'en'");
++}

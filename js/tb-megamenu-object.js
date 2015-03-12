@@ -665,15 +665,14 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
 
       case 'col':
         $('.toolcol-exclass').attr('value', currentSelected.attr('data-class') || '');
-        $('.toolcol-block').val (currentSelected.children('.mega-inner').children('.tb-megamenu-block').attr('data-block') || '').trigger("liszt:updated");
-        $('.toolcol-width').val (currentSelected.attr('data-width') || '').trigger("liszt:updated");
+        $('.toolcol-block').val (currentSelected.children('.mega-inner').children('.tb-megamenu-block').attr('data-block') || '').trigger("chosen:updated");
+        $('.toolcol-width').val (currentSelected.attr('data-width') || '').trigger("chosen:updated");
         if (currentSelected.find ('.mega-nav').length > 0) {
           $('.toolcol-block').parent().addClass('disabled');
         }
         if (currentSelected.parent().children().length == 1) {
           $('.toolcol-width').parent().addClass ('disabled');
         }
-        
 
         var toggle = $('.toolcol-hidewhencollapse');
         toggle.find('label').removeClass('active btn-success btn-danger btn-primary');
