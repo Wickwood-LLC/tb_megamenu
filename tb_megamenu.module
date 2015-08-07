@@ -29,7 +29,6 @@ function tb_megamenu_menu() {
     'description' => t('Config TB Mega Menu'), 
     'page callback' => 'drupal_get_form', 
     'page arguments' => array ('tb_megamenu_configure_form', 3),
-    'access arguments' => array(3),
     'type' => MENU_CALLBACK,
     'access arguments' => array('administer tb_megamenu'),
     'file' => 'tb_megamenu.admin.inc', 
@@ -58,11 +57,11 @@ function tb_megamenu_permission() {
 /**
  * Implements hook_theme().
  * 
- * @param type $existing
- * @param type $type
- * @param type $theme
- * @param type $path
- * @return string
+ * @param array $existing
+ * @param string $type
+ * @param string $theme
+ * @param string $path
+ * @return array
  */
 function tb_megamenu_theme($existing, $type, $theme, $path) {
   $items = array();
