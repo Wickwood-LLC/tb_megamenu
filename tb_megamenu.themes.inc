@@ -301,18 +301,34 @@ function template_preprocess_tb_megamenu_block(&$vars) {
   if ($block) {
     $module = $block->module;
     $delta = $block->delta;
-    $content = module_invoke($module, 'block_view', $delta);
-    if (isset($vars['showblocktitle']) && $vars['showblocktitle']) {
-      $block->subject = empty($content['subject']) ? $block->title : $content['subject'];
+    $block_content = module_invoke($module, 'block_view', $delta);
+
+    if (empty($block_content) && $vars['section'] == 'backend') {
+      // Using description instead content.
+      $blocks_info = module_invoke($module, 'block_info');
+      $vars['content'] = $blocks_info[$delta]['info'];
     }
-    else {
-      $block->subject = "";
-    }
-    if (empty($content) && $vars['section'] == 'backend') {
-      $vars['content'] = tb_megamenu_get_block_title($vars['block_key']);
-    }
-    elseif ($content) {
-      $vars['content'] = theme("block", array('elements' => array('content' => $content['content'], '#children' => (is_array($content['content']) ? drupal_render($content['content']) : $content['content']), '#block' => $block)));
+    elseif ($block_content) {
+
+      $enable_block_translate = function_exists('i18n_block_translate_block');
+      // Translate block if i18n_block module is enabled.
+      if ($enable_block_translate) {
+        $block->subject = '';
+        $block->content = &$block_content['content'];
+        $block = i18n_block_translate_block($block);
+        $block->title = $block->subject;
+      }
+
+      // Check configuration for show block title;
+      if (isset($vars['showblocktitle']) && $vars['showblocktitle']) {
+        // If i18n_block is not enabled, so we will set title to subject.
+        if (!$enable_block_translate) {
+          $block->subject = $block->title ? $block->title : $block_content['subject'];
+        }
+      } else {
+        $block->subject = '';
+      }
+      $vars['content'] = theme("block", array('elements' => array('content' => $block_content['content'], '#children' => (is_array($block_content['content']) ? drupal_render($block_content['content']) : $block_content['content']), '#block' => $block)));
     }
     else {
       $vars['content'] = NULL;
