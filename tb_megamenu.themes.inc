@@ -303,35 +303,32 @@ function template_preprocess_tb_megamenu_block(&$vars) {
     $module = $block->module;
     $delta = $block->delta;
     $block_content = module_invoke($module, 'block_view', $delta);
-
     if (empty($block_content) && $vars['section'] == 'backend') {
       // Using description to show instead content.
       $blocks_info = module_invoke($module, 'block_info');
       $vars['content'] = $blocks_info[$delta]['info'];
     }
     elseif ($block_content) {
-      $enable_block_translate = function_exists('i18n_block_translate_block');
-      // Translate content in block.
-      if ($enable_block_translate) {
+      $block->subject = '';
+      $is_enabled_i18n_block = module_enable(array('i18n_block'));
+      // Translate content in block. And content must be a string.
+      if ($is_enabled_i18n_block && !is_array($block_content['content'])) {
         $block->content = &$block_content['content'];
         $block->content = i18n_string_text("blocks:$block->module:$block->delta:body", $block->content);
       }
-
       // Check configuration for show block title;
       if (isset($vars['showblocktitle']) && $vars['showblocktitle']) {
         // If i18n_block is not enabled, so we will set title to subject.
-        if (!$enable_block_translate) {
+        if (!$is_enabled_i18n_block) {
           $block->subject = $block->title ? $block->title : $block_content['subject'];
         }
         elseif (!empty($block->title) && $block->title != '<none>') {
           // Check plain here to allow module generated titles to keep any markup.
-          $block->subject = '';
+          $block->subject = $block->title;
           $block->subject = i18n_string_plain("blocks:$block->module:$block->delta:title", $block->subject);
         }
       }
-      else {
-        $block->subject = '';
-      }
+
       $vars['content'] = theme("block", array(
         'elements' => array(
           'content' => $block_content['content'],
