@@ -90,9 +90,10 @@ function template_preprocess_tb_megamenu_item(&$vars) {
   $item_config = isset($menu_config[$mlid]['item_config']) ? $menu_config[$mlid]['item_config'] : array();
   tb_megamenu_edit_item_config($item_config);
   $vars['item_config'] = $item_config;
-  if (!empty($menu_config[$mlid]['rows_content']) && 
-      ($vars['section'] == 'backend' || !$item_config['hidesub'])) {
-    
+  if (!empty($menu_config[$mlid]['rows_content']) &&
+    ($vars['section'] == 'backend' || !$item_config['hidesub'])
+  ) {
+
     $vars['submenu'] = theme('tb_megamenu_submenu', array(
       'menu_name' => $vars['menu_name'],
       'parent' => $item,
@@ -136,8 +137,8 @@ function template_preprocess_tb_megamenu_item(&$vars) {
   $vars['item']['link']['#attributes'] = $link_attributes;
   if (!empty($item['link']['localized_options']['attributes'])) {
     if (!(isset($item['link']['localized_options']['attributes']['title']) &&
-            $item['link']['localized_options']['attributes']['title'])) {
-
+      $item['link']['localized_options']['attributes']['title'])
+    ) {
       $item['link']['localized_options']['attributes']['title'] = $item['link']['title'];
     }
     $vars['item']['link']['#attributes'] += $item['link']['localized_options']['attributes'];
@@ -304,19 +305,16 @@ function template_preprocess_tb_megamenu_block(&$vars) {
     $block_content = module_invoke($module, 'block_view', $delta);
 
     if (empty($block_content) && $vars['section'] == 'backend') {
-      // Using description instead content.
+      // Using description to show instead content.
       $blocks_info = module_invoke($module, 'block_info');
       $vars['content'] = $blocks_info[$delta]['info'];
     }
     elseif ($block_content) {
-
       $enable_block_translate = function_exists('i18n_block_translate_block');
-      // Translate block if i18n_block module is enabled.
+      // Translate content in block.
       if ($enable_block_translate) {
-        $block->subject = '';
         $block->content = &$block_content['content'];
-        $block = i18n_block_translate_block($block);
-        $block->title = $block->subject;
+        $block->content = i18n_string_text("blocks:$block->module:$block->delta:body", $block->content);
       }
 
       // Check configuration for show block title;
@@ -325,10 +323,22 @@ function template_preprocess_tb_megamenu_block(&$vars) {
         if (!$enable_block_translate) {
           $block->subject = $block->title ? $block->title : $block_content['subject'];
         }
-      } else {
+        elseif (!empty($block->title) && $block->title != '<none>') {
+          // Check plain here to allow module generated titles to keep any markup.
+          $block->subject = '';
+          $block->subject = i18n_string_plain("blocks:$block->module:$block->delta:title", $block->subject);
+        }
+      }
+      else {
         $block->subject = '';
       }
-      $vars['content'] = theme("block", array('elements' => array('content' => $block_content['content'], '#children' => (is_array($block_content['content']) ? drupal_render($block_content['content']) : $block_content['content']), '#block' => $block)));
+      $vars['content'] = theme("block", array(
+        'elements' => array(
+          'content' => $block_content['content'],
+          '#children' => (is_array($block_content['content']) ? drupal_render($block_content['content']) : $block_content['content']),
+          '#block' => $block
+        )
+      ));
     }
     else {
       $vars['content'] = NULL;
