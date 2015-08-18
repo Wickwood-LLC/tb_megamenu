@@ -89,7 +89,6 @@ function tb_megamenu_get_block_title($block_key) {
 }
 
 function tb_megamenu_build_page_trail($page_menu) {
-  $path = current_path();
   $trail = array();
   foreach ($page_menu as $item) {
     if ($item ['link'] ['in_active_trail']) {
