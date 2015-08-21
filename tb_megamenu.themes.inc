@@ -252,7 +252,7 @@ function template_preprocess_tb_megamenu_column(&$vars) {
       $vars['attributes_array']['data-showblocktitle'] = $col_config['showblocktitle'];
 
       if ($vars['section'] !== 'frontend') {
-        $vars['close_button'] = '<span class="close icon-remove" title="' . t("Remove this block") . '">&nbsp;</span>';
+        $vars['close_button'] = '<span class="close fa fa-trash-o" title="' . t("Remove this block") . '">&nbsp;</span>';
       }
     }
   }

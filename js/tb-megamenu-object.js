@@ -12,11 +12,11 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
   Drupal.TBMegaMenu.isLockedAjax = function() {
     return Drupal.TBMegaMenu.lockedAjax;
   }
-  
+
   Drupal.TBMegaMenu.releaseAjax = function() {
     Drupal.TBMegaMenu.lockedAjax = false;
   }
-  
+
   $.fn.megamenuAdmin = function (options) {
     var defaultOptions = {};
     var options = $.extend(defaultOptions, options);
@@ -26,7 +26,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     nav_cols = megamenu.find('[class*="span"]');
 
     nav_all = nav_items.add(nav_subs).add(nav_cols);
-    nav_items.each (function () {      
+    nav_items.each (function () {
       var a = $(this);
       var liitem = a.closest('li');
       if (liitem.attr('data-hidesub') == 1) {
@@ -36,14 +36,14 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
         liitem.removeClass('dropdown dropdown-submenu mega');
       }
     });
-    
+
     hide_toolbox(true);
     bindEvents (nav_all);
     $('.toolbox-action, .toolbox-toggle, .toolbox-input').unbind ("focus blur click change keydown");
     $('.tb-megamenu-admin-mm-row').click (function(event) {
       event.stopPropagation();
     });
-    
+
     $(document.body).click (function(event) {
       hide_toolbox (true);
     });
@@ -70,7 +70,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
       event.stopPropagation();
       return false;
     });
-    
+
     $('.toolbox-input').bind ('focus blur click', function(event) {
       event.stopPropagation();
       return false;
@@ -158,7 +158,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     else {
       update_toggle (toggle, 1);
       toggle.attr('data-always-show-submenu', 1);
-    }      
+    }
   }
 
   actions.showBlockTitle = function() {
@@ -225,10 +225,10 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
       if (parseInt(currentSelected.attr('data-hidewcol'))) {
         currentSelected.attr('data-hidewcol', 0);
         currentSelected.removeClass ('hidden-collapse');
-      } 
+      }
       else {
         currentSelected.attr('data-hidewcol', 1);
-        currentSelected.addClass ('hidden-collapse');      
+        currentSelected.addClass ('hidden-collapse');
       }
     }
     update_toolbox ();
@@ -359,7 +359,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     Drupal.TBMegaMenu.TBElementsCounter['column'] ++;
 
     var $col = $('<div id=tb-megamenu-column-' + column + '><div class="mega-inner"></div></div>');
-    if (actions.datas.addfirst) { 
+    if (actions.datas.addfirst) {
       $col.prependTo (currentSelected.parent());
     }
     else {
@@ -393,7 +393,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
       show_toolbox ($(currentSelected).closest('.tb-megamenu-item'));
       currentSelected = $(currentSelected).closest('.tb-megamenu-item');
       currentSelected.find('.tb-megamenu-submenu').remove();
-      
+
     } // if this is the only one column left
     else {
       if (type_menu) {
@@ -401,7 +401,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
         tocol = colidx == 0 ? $allmenucols[1] : $allmenucols[colidx-1];
 
         $col.find ('ul:first > li').appendTo ($(tocol).find('ul:first'));
-      } 
+      }
 
       var colidx = $allcols.index($col),
         nextActiveCol = colidx == 0 ? $allcols[1] : $allcols[colidx-1];
@@ -437,7 +437,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
         $('#tb-megamenu-admin-mm-container').html(msg.responseText).megamenuAdmin({'menu_name': options['menu_name']});
         $('#tb-megamenu-admin-mm-container').find('.mega-inner').children('span.close').click(function() {
           $(this).parent().html("");
-        });        
+        });
         $('#tb-megamenu-admin-mm-tb #toolbox-loading').hide();
         $('#tb-megamenu-admin-mm-tb #toolbox-message').html(Drupal.t("All unsaved changed has been reseted!")).show();
         window.setTimeout(function() {
@@ -574,11 +574,11 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     megamenu.find ('ul[class*="level"] > li').each (function(){
       if (!$(this).has (currentSelected).length > 0) $(this).removeClass ('open');
       else $(this).addClass ('open');
-    });    
+    });
 
     // set selected
     megamenu.data('nav_all').removeClass ('selected');
-    currentSelected.addClass ('selected');    
+    currentSelected.addClass ('selected');
     var type = toolbox_type ();
     $('#tb-megamenu-admin-mm-tool' + type).show();
     update_toolbox (type);
@@ -605,7 +605,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
         toggle.find('label').removeClass('active btn-success btn-danger btn-primary');
         if (parseInt(liitem.attr('data-group'))) {
           $('.toolitem-sub').addClass ('disabled');
-        } 
+        }
         else if (sub.length == 0 || sub.css('display') == 'none') {
           update_toggle (toggle, 0);
         }
@@ -622,7 +622,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
           update_toggle (toggle, 1);
         }
         else {
-          update_toggle (toggle, 0);        
+          update_toggle (toggle, 0);
         }
 
         if (!liparent.length || !liparent.hasClass('mega')) {
@@ -643,14 +643,14 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
           if (parseInt(liitem.attr('data-level')) > 1) {
             $('.toolsub-align-center').addClass ('disabled');
             $('.toolsub-align-justify').addClass ('disabled');
-          } 
+          }
 
           if (liitem.attr('data-alignsub')) {
             $('.toolsub-align-'+liitem.attr('data-alignsub')).addClass ('active');
             if (liitem.attr('data-alignsub') == 'justify') {
               $('.toolsub-width').addClass ('disabled');
             }
-          }          
+          }
         }
 
         var toggle = $('.toolsub-hidewhencollapse');
@@ -660,7 +660,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
         }
         else {
           update_toggle (toggle, 0);
-        }  
+        }
         break;
 
       case 'col':
@@ -681,7 +681,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
         }
         else {
           update_toggle (toggle, 0);
-        }  
+        }
         var toggle = $('.toolcol-showblocktitle');
         toggle.find('label').removeClass('active btn-success btn-danger btn-primary');
         if (!currentSelected.attr('data-showblocktitle') || parseInt(currentSelected.attr('data-showblocktitle'))) {
@@ -689,7 +689,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
         }
         else {
           update_toggle (toggle, 0);
-        }  
+        }
         break;
     }
   }
@@ -701,7 +701,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
   }
 
   apply_toolbox = function (input) {
-    var name = $(input).attr('data-name'), 
+    var name = $(input).attr('data-name'),
     value = input.value,
     type = toolbox_type ();
     switch (name) {
@@ -728,19 +728,19 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
       }
       $(input).val(value);
       break;
-    case 'duration': 
+    case 'duration':
       value = parseInt(value);
       if(isNaN(value)) {
         value = "";
       }
-      $(input).val(value);        
+      $(input).val(value);
       break;
-    case 'delay': 
+    case 'delay':
       value = parseInt(value);
       if(isNaN(value)) {
         value = "";
       }
-      $(input).val(value);        
+      $(input).val(value);
       break;
     case 'class':
       if (type == 'item') {
@@ -786,7 +786,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
       break;
     }
   }
-  
+
   callAjax = function(data) {
     if(Drupal.TBMegaMenu.isLockedAjax()) {
       window.setTimeout(function() {
@@ -804,7 +804,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
           complete: function( msg ) {
             var resp = $.parseJSON(msg.responseText);
             var content = resp.content ? resp.content : "";
-            var close_button = $('<span class="close icon-remove" title="' + Drupal.t("Remove this block") + '">&nbsp;</span>');
+            var close_button = $('<span class="close fa fa-trash-o" title="' + Drupal.t("Remove this block") + '">&nbsp;</span>');
             var id = resp.id ? resp.id : "";
             var currentElement = $("#" + id);
             if(currentElement.length) {
@@ -824,7 +824,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
       break;
     }
   }
-  
+
   defaultColumnsWidth = function (count) {
     if (count < 1) {
       return null;
@@ -840,7 +840,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
   }
 
   bindEvents = function (els) {
-    if (megamenu.data('nav_all')) 
+    if (megamenu.data('nav_all'))
       megamenu.data('nav_all', megamenu.data('nav_all').add(els));
     else
       megamenu.data('nav_all', els);
@@ -859,7 +859,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
 
     els.click (function(event){
       show_toolbox ($(this));
-      event.stopPropagation();        
+      event.stopPropagation();
       return false;
     });
   }
@@ -930,7 +930,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
             .removeClass('active btn-success btn-danger btn-primary');
 
           label.addClass('active ' + (input.val() == '' ? 'btn-primary' : (input.val() == 0 ? 'btn-danger' : 'btn-success')));
-          
+
           input.attr('checked', true).trigger('change');
         }
       });
