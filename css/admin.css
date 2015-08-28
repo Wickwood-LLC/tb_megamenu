@@ -370,15 +370,6 @@
   overflow: hidden;
 }
 
-/*.tb-megamenu .chosen-container-single .chosen-search input {
-  background-image: url(../images/search-invert.png);
-  background-position: 95% center;
-  margin: 0;
-  padding: 2px 20px 2px 5px;
-  border: 1px solid #eee;
-  float: none;
-}*/
-
 .tb-megamenu .chosen-container-single .chosen-search input:focus {
   border: 1px solid rgba(82, 168, 236, .6);
 }
