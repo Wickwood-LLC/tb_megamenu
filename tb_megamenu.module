@@ -1,4 +1,7 @@
 <?php
+
+define('TB_MEGAMENU_CACHE_ID', 'tb_megamenu_extension_info');
+
 include_once drupal_get_path('module', 'tb_megamenu') . '/tb_megamenu.functions.inc';
 include_once drupal_get_path('module', 'tb_megamenu') . '/tb_megamenu.themes.inc';
 include_once drupal_get_path('module', 'tb_megamenu') . '/tb_megamenu.admin.inc';
@@ -76,7 +79,7 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
     'preprocess functions' => array(
       'template_preprocess',
       'template_preprocess_tb_megamenu',
-    ),    
+    ),
   );
 
   $items['tb_megamenu_nav'] = array(
@@ -310,4 +313,19 @@ function tb_megamenu_block_view_alter(&$data, $block) {
  */
 function tb_megamenu_form_menu_overview_form_alter(&$form, &$form_state) {
   $form['#submit'][] = 'tb_megamenu_update_megamenus';
+}
+
+/**
+ * Implements hook_modules_enabled().
+ */
+function tb_megamenu_modules_enabled($modules) {
+  $clear_cache = FALSE;
+  foreach ($modules as $module) {
+    if (function_exists($module . '_tb_megamenu_extension_info')) {
+      $clear_cache = TRUE;
+    }
+  }
+  if ($clear_cache) {
+    cache_clear_all(TB_MEGAMENU_CACHE_ID, 'cache');
+  }
 }
