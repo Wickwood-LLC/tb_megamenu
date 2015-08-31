@@ -24,7 +24,6 @@ function template_preprocess_tb_megamenu(&$vars) {
     ));
     $vars['classes_array'][] = "style-" . $block_config['style'];
   }
-
   if ($block_config['animation'] != 'none') {
     $vars['classes_array'][] = "animate";
     $vars['classes_array'][] = $block_config['animation'];
@@ -32,7 +31,15 @@ function template_preprocess_tb_megamenu(&$vars) {
     $vars['attributes_array']['data-delay'] = $block_config['delay'];
     $vars['attributes_array']['id'] = "tb-megamenu-" . str_replace('_', '-', $menu_name);
   }
-
+  $vars['content'] = theme('tb_megamenu_nav', array(
+    'menu_name' => $vars['menu_name'],
+    'level' => 0,
+    'menu_config' => $menu_config,
+    'block_config' => $block_config,
+    'items' => $items,
+    'trail' => $trail,
+    'section' => $vars['section'],
+  ));
   $vars['block_config'] = $block_config;
   if ($vars['section'] == 'frontend' && $block_config['animation'] != 'none') {
     $css = array();
@@ -48,29 +55,6 @@ function template_preprocess_tb_megamenu(&$vars) {
     $css[] = '}';
     drupal_add_css(implode("\n", $css), array('type' => 'inline'));
   }
-
-  // Get modules declare hook_tb_megamenu_extension_info.
-  $extension = '';
-  $modules = array_keys(tb_megamenu_load_extension_info());
-  if (in_array($block_config['style'], $modules)) {
-    // Selected extension.
-    $extension = $block_config['style'];
-    $name_function = $extension . '_preprocess_tb_megamenu';
-    if (function_exists($name_function)) {
-      $name_function($vars);
-    }
-  }
-
-  $vars['content'] = theme('tb_megamenu_nav', array(
-    'menu_name' => $vars['menu_name'],
-    'level' => 0,
-    'menu_config' => $menu_config,
-    'block_config' => $block_config,
-    'items' => $items,
-    'trail' => $trail,
-    'section' => $vars['section'],
-    'name_extension' => $extension
-  ));
 }
 
 function template_preprocess_tb_megamenu_nav(&$vars) {
@@ -87,7 +71,6 @@ function template_preprocess_tb_megamenu_nav(&$vars) {
         'block_config' => $vars['block_config'],
         'trail' => $vars['trail'],
         'section' => $vars['section'],
-        'name_extension' => $vars['name_extension']
       ));
     }
   }
@@ -95,14 +78,6 @@ function template_preprocess_tb_megamenu_nav(&$vars) {
   $vars['classes_array'][] = "nav";
   $vars['classes_array'][] = "level-" . $level;
   $vars['classes_array'][] = "items-" . count($items);
-
-  // Load preprocess function from the selected extension.
-  if ($vars['name_extension']) {
-    $name_function = $vars['name_extension'] . '_preprocess_tb_megamenu_nav';
-    if (function_exists($name_function)) {
-      $name_function($vars);
-    }
-  }
 }
 
 function template_preprocess_tb_megamenu_item(&$vars) {
@@ -127,7 +102,6 @@ function template_preprocess_tb_megamenu_item(&$vars) {
       'block_config' => $vars['block_config'],
       'trail' => $vars['trail'],
       'section' => $vars['section'],
-      'name_extension' => $vars['name_extension']
     ));
   }
   else {
@@ -187,14 +161,6 @@ function template_preprocess_tb_megamenu_item(&$vars) {
   if ($vars['section'] == 'backend') {
     $vars['attributes_array']['title'] = t("Menu Item");
   }
-
-  // Load preprocess function from the selected extension.
-  if ($vars['name_extension']) {
-    $name_function = $vars['name_extension'] . '_preprocess_tb_megamenu_item';
-    if (function_exists($name_function)) {
-      $name_function($vars);
-    }
-  }
 }
 
 function template_preprocess_tb_megamenu_submenu(&$vars) {
@@ -216,7 +182,6 @@ function template_preprocess_tb_megamenu_submenu(&$vars) {
       'block_config' => $vars['block_config'],
       'trail' => $vars['trail'],
       'section' => $vars['section'],
-      'name_extension' => $vars['name_extension']
     ));
   }
   $vars['rows'] = implode("\n", $rows);
@@ -236,14 +201,6 @@ function template_preprocess_tb_megamenu_submenu(&$vars) {
   if (!empty($submenu_config['width'])) {
     $vars['attributes_array']['style'] = "width: " . $submenu_config['width'] . "px;";
   }
-
-  // Load preprocess function from the selected extension.
-  if ($vars['name_extension']) {
-    $name_function = $vars['name_extension'] . '_preprocess_tb_megamenu_submenu';
-    if (function_exists($name_function)) {
-      $name_function($vars);
-    }
-  }
 }
 
 function template_preprocess_tb_megamenu_row(&$vars) {
@@ -259,19 +216,10 @@ function template_preprocess_tb_megamenu_row(&$vars) {
       'block_config' => $vars['block_config'],
       'trail' => $vars['trail'],
       'section' => $vars['section'],
-      'name_extension' => $vars['name_extension']
     ));
   }
   $vars['columns'] = implode("\n", $cols);
   $vars['classes_array'][] = 'row-fluid';
-
-  // Load preprocess function from the selected extension.
-  if ($vars['name_extension']) {
-    $name_function = $vars['name_extension'] . '_preprocess_tb_megamenu_row';
-    if (function_exists($name_function)) {
-      $name_function($vars);
-    }
-  }
 }
 
 function template_preprocess_tb_megamenu_column(&$vars) {
@@ -292,7 +240,6 @@ function template_preprocess_tb_megamenu_column(&$vars) {
         'block_config' => $vars['block_config'],
         'trail' => $vars['trail'],
         'section' => $vars['section'],
-        'name_extension' => $vars['name_extension']
       ));
       break;
     }
@@ -300,8 +247,7 @@ function template_preprocess_tb_megamenu_column(&$vars) {
       $tb_items[] = theme('tb_megamenu_block', array(
         'block_key' => $tb_item['block_key'],
         'section' => $vars['section'],
-        'showblocktitle' => $col_config['showblocktitle'],
-        'name_extension' => $vars['name_extension']
+        'showblocktitle' => $col_config['showblocktitle']
       ));
       $vars['attributes_array']['data-showblocktitle'] = $col_config['showblocktitle'];
 
@@ -326,15 +272,6 @@ function template_preprocess_tb_megamenu_column(&$vars) {
   $vars['attributes_array']['data-width'] = $col_config['width'];
   $vars['attributes_array']['data-hidewcol'] = $col_config['hidewcol'];
   $vars['attributes_array']['id'] = tb_megamenu_get_counter("column");
-
-  // Load preprocess function from the selected extension.
-  if ($vars['name_extension']) {
-    $name_function = $vars['name_extension'] . '_preprocess_tb_megamenu_column';
-    if (function_exists($name_function)) {
-      $name_function($vars);
-    }
-  }
-
 }
 
 function template_preprocess_tb_megamenu_subnav(&$vars) {
@@ -352,21 +289,12 @@ function template_preprocess_tb_megamenu_subnav(&$vars) {
       'block_config' => $vars['block_config'],
       'trail' => $vars['trail'],
       'section' => $vars['section'],
-      'name_extension' => $vars['name_extension']
     ));
   }
   $vars['lis'] = implode("\n", $lis);
   $vars['classes_array'][] = "mega-nav";
   $vars['classes_array'][] = "level-" . $level;
   $vars['classes_array'][] = "items-" . count($col);
-
-  // Load preprocess function from the selected extension.
-  if ($vars['name_extension']) {
-    $name_function = $vars['name_extension'] . '_preprocess_tb_megamenu_subnav';
-    if (function_exists($name_function)) {
-      $name_function($vars);
-    }
-  }
 }
 
 function template_preprocess_tb_megamenu_block(&$vars) {
@@ -419,14 +347,6 @@ function template_preprocess_tb_megamenu_block(&$vars) {
   }
   else {
     $vars['content'] = NULL;
-  }
-
-  // Load preprocess function from the selected extension.
-  if ($vars['name_extension']) {
-    $name_function = $vars['name_extension'] . '_preprocess_tb_megamenu_block';
-    if (function_exists($name_function)) {
-      $name_function($vars);
-    }
   }
 }
 

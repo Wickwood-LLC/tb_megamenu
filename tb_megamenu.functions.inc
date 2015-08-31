@@ -82,7 +82,10 @@ function tb_megamenu_get_blocks_options() {
 
 function tb_megamenu_get_block_title($block_key) {
   $blocks_options = tb_megamenu_get_blocks_options();
-  return isset($blocks_options[$block_key]) ? $blocks_options[$block_key] : NULL;
+  if (isset($blocks_options[$block_key])) {
+    return $blocks_options[$block_key];
+  }
+  return NULL;
 }
 
 function tb_megamenu_build_page_trail($page_menu) {
@@ -389,32 +392,54 @@ function tb_megamenu_edit_item_config(&$item_config) {
 }
 
 function tb_megamenu_edit_submenu_config(&$submenu_config) {
-  $submenu_config += array(
-    'width' => '',
-    'class' => '',
-    'group' => ''
-  );
+  if (!isset($submenu_config['width'])) {
+    $submenu_config['width'] = "";
+  }
+  if (!isset($submenu_config['class'])) {
+    $submenu_config['class'] = "";
+  }
+  if (!isset($submenu_config['group'])) {
+    $submenu_config['group'] = "";
+  }
 }
 
 function tb_megamenu_edit_col_config(&$col_config) {
-  $col_config += array(
-    'width' => 12,
-    'class' => 'class',
-    'hidewcol' => 0,
-    'showblocktitle' => 0
-  );
+  if (!isset($col_config['width'])) {
+    $col_config['width'] = 12;
+  }
+  if (!isset($col_config['class'])) {
+    $col_config['class'] = "";
+  }
+  if (!isset($col_config['hidewcol'])) {
+    $col_config['hidewcol'] = 0;
+  }
+  if (!isset($col_config['showblocktitle'])) {
+    $col_config['showblocktitle'] = 0;
+  }
 }
 
 function tb_megamenu_edit_block_config(&$block_config) {
-  $block_config += array(
-    'animation' => 'none',
-    'style' => '',
-    'auto-arrow' => TRUE,
-    'duration' => 400,
-    'delay' => 200,
-    'always-show-submenu' => 1,
-    'off-canvas' => 0
-  );
+  if (!isset($block_config['animation'])) {
+    $block_config['animation'] = "none";
+  }
+  if (!isset($block_config['style'])) {
+    $block_config['style'] = "";
+  }
+  if (!isset($block_config['auto-arrow'])) {
+    $block_config['auto-arrow'] = TRUE;
+  }
+  if (!isset($block_config['duration'])) {
+    $block_config['duration'] = 400;
+  }
+  if (!isset($block_config['delay'])) {
+    $block_config['delay'] = 200;
+  }
+  if (!isset($block_config['always-show-submenu'])) {
+    $block_config['always-show-submenu'] = 1;
+  }
+  if (!isset($block_config['off-canvas'])) {
+    $block_config['off-canvas'] = 0;
+  }
 }
 
 function tb_megamenu_render_block($delta = 0) {
@@ -453,12 +478,10 @@ function tb_megamenu_animation_options($block_config) {
 function tb_megamenu_style_options($block_config) {
   $styles = array(
     '' => t('Default'),
+    'black' => t('Black'),
     'blue' => t('Blue'),
-    'green' => t('Green')
+    'green' => t('Green'),
   );
-
-  $styles += tb_megamenu_load_extension_info();
-
   $options = array();
   foreach ($styles as $value => $title) {
     if ($value == $block_config['style']) {
@@ -505,6 +528,7 @@ function tb_megamenu_find_hook_templates($cache, $path) {
       $templates[$hook]['pattern'] = $cache[$hook]['pattern'];
     }
   }
+
   $patterns = array_keys($files);
 
   foreach ($cache as $hook => $info) {
@@ -512,6 +536,7 @@ function tb_megamenu_find_hook_templates($cache, $path) {
       // Transform _ in pattern to - to match file naming scheme
       // for the purposes of searching.
       $pattern = strtr($info['pattern'], '_', '-');
+
       $matches = preg_grep('/^' . $pattern . '/', $patterns);
       if ($matches) {
         foreach ($matches as $match) {
@@ -562,6 +587,7 @@ function tb_megamenu_replace_css() {
     drupal_get_path('module', 'tb_megamenu') . '/css/styles/orange.css',
   );
   foreach ($files as $css_file) {
+    $output = array();
     $f = fopen($css_file, "r");
     $lines = array();
     $ls = array();
@@ -641,46 +667,3 @@ function tb_megamenu_update_megamenus(&$form, &$form_state) {
     }
   }
 }
-
-/**
- * Get the info of extension.
- *
- * @return array
- */
-function tb_megamenu_load_extension_info() {
-  $datas = &drupal_static(__FUNCTION__);
-  if (!isset($datas)) {
-    // Get data from cache.
-    if ($cache = cache_get(TB_MEGAMENU_CACHE_ID)) {
-      $datas = $cache->data;
-    }
-    else {
-      // Create caching for info of extension.
-      $datas = _load_extension_info();
-      cache_set(TB_MEGAMENU_CACHE_ID, $datas);
-    }
-  }
-  return $datas;
-}
-
-
-/**
- * Get the info of extension from the declared function (hooks).
- *
- * @return array
- */
-function _load_extension_info() {
-  $datas = array();
-  $modules = module_implements('tb_megamenu_extension_info');
-  foreach ($modules as $module) {
-    $function = $module . '_tb_megamenu_extension_info';
-    if (function_exists($function)) {
-      $data = $function();
-      if (!(empty($data['type']) || empty($data['title']))) {
-        $datas[$module] = t($data['title']);
-      }
-    }
-  }
-  return $datas;
-}
-
