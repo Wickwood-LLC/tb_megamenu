@@ -72,16 +72,21 @@ function tb_megamenu_update_7101(&$sandbox) {
   );
   db_add_field('tb_megamenus', 'language', $field, $keys_new);
 
-  // Set all existing menus to current language.
-  db_query("UPDATE {tb_megamenus} SET language = '" . $GLOBALS['language']->language . "'");
-
   return t('Add more field language into tb_megamenus table');
+}
+
+/**
+ * Set all existing menus to current language.
+ */
+function tb_megamenu_update_7102(&$sandbox) {
+  db_query("UPDATE {tb_megamenus} SET language = '" . $GLOBALS['language']->language . "'");
+  return t('Set all existing menus to current language');
 }
 
 /**
  * Add tb_megamenu_themes table.
  */
-function tb_megamenu_update_7102(&$sandbox) {
+function tb_megamenu_update_7201(&$sandbox) {
   db_create_table('tb_megamenu_extensions', array(
     'fields' => array(
       'machine_name' => array(
@@ -103,5 +108,7 @@ function tb_megamenu_update_7102(&$sandbox) {
     'primary key' => array('machine_name')
   ));
 
-  return t('Add a new table tb_megamenu_themes');
+  return t('Add a new table tb_megamenu_extensions');
 }
+
+
