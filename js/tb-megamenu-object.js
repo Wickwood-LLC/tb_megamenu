@@ -554,7 +554,6 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     for (key in Drupal.TBMegaMenu.extensions) {
       block_config = Object.assign(block_config, Drupal.TBMegaMenu.extensions[key].prepareToSave());
     }
-    console.log(block_config);
     var data = {
       'action': 'save',
       'menu_name': options['menu_name'],
