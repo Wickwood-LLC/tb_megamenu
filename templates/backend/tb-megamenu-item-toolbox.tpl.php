@@ -52,9 +52,7 @@
   </ul>
   <ul>
     <li title="<?php print t('Item caption') . ' - ' . t('Add caption to this item'); ?>">
-      <label class="hasTip">
-        <?php print t('Item caption') ?>
-      </label>
+      <label class="hasTip"><?php print t('Item caption') ?></label>
       <fieldset class="">
         <input type="text" class="input-large toolitem-caption toolbox-input" name="toolitem-caption" data-name="caption" value="" />
       </fieldset>
