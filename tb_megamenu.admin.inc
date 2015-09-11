@@ -56,14 +56,8 @@ function tb_megamenu_configure_form($form, &$form_state, $menu_names = array()) 
     tb_megamenu_add_css($lib_chosen['css']);
   }
   else {
-    // tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/chosen/chosen.min.css');
-    // drupal_add_js(drupal_get_path('module', 'tb_megamenu') . '/js/chosen/chosen.jquery.min.js');
-    drupal_add_js(JS_CHOSEN_142, array(
-      'type' => 'external'
-    ));
-    drupal_add_css(CSS_CHOSEN_142, array(
-      'type' => 'external'
-    ));
+    drupal_add_js(JS_CHOSEN_142, array('type' => 'external'));
+    drupal_add_css(CSS_CHOSEN_142, array('type' => 'external'));
   }
   tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/bootstrap.css');
   tb_megamenu_add_css(drupal_get_path('module', 'tb_megamenu') . '/css/base.css');
