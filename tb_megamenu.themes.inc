@@ -51,7 +51,7 @@ function template_preprocess_tb_megamenu(&$vars) {
 
   // Get modules declare hook_tb_megamenu_extension_info.
   $extension = '';
-  $modules = array_keys(tb_megamenu_load_extension_info());
+  $modules = array_keys(tb_megamenu_load_extension_info('theme'));
   if (in_array($block_config['style'], $modules)) {
     // Selected extension.
     $extension = $block_config['style'];
@@ -116,8 +116,7 @@ function template_preprocess_tb_megamenu_item(&$vars) {
   tb_megamenu_edit_item_config($item_config);
   $vars['item_config'] = $item_config;
   if (!empty($menu_config[$mlid]['rows_content']) &&
-    ($vars['section'] == 'backend' || !$item_config['hidesub'])
-  ) {
+      ($vars['section'] == 'backend' || !$item_config['hidesub'])) {
 
     $vars['submenu'] = theme('tb_megamenu_submenu', array(
       'menu_name' => $vars['menu_name'],
@@ -400,7 +399,6 @@ function template_preprocess_tb_megamenu_block(&$vars) {
           $block->subject = i18n_string_plain("blocks:$block->module:$block->delta:title", $block->subject);
         }
       }
-
       $vars['content'] = theme("block", array(
         'elements' => array(
           'content' => $block_content['content'],
@@ -441,9 +439,10 @@ function template_preprocess_tb_megamenu_backend(&$vars) {
   $vars['column_toolbox'] = theme_render_template(drupal_get_path('module', 'tb_megamenu') . "/templates/backend/tb-megamenu-column-toolbox.tpl.php", array('blocks_options' => tb_megamenu_get_blocks_options()));
   $vars['block_config'] = $block_config;
   $vars['animation_options'] = tb_megamenu_animation_options($block_config);
-  $vars['style_options'] = tb_megamenu_style_options($block_config);
   $vars['edit_links'] = base_path() . "admin/structure/menu/manage/$menu_name";
   $vars['edit_menu'] = base_path() . "admin/structure/menu/manage/$menu_name/edit";
+  // Init items configuration in mega toolbox.
+  $vars['mega_toolbox_items'] = tb_megamenu_init_megatoolbox_item($block_config);
 
   $js_inline = 'Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
   (function ($) {
@@ -452,7 +451,29 @@ function template_preprocess_tb_megamenu_backend(&$vars) {
         $("#tb-megamenu-admin-mm-container").megamenuAdmin({menu_name: "' . $menu_name . '"});
       }
     }
-  })(jQuery);
-  ';
+  })(jQuery);';
   drupal_add_js($js_inline, array('type' => 'inline'));
+
+  $modules = array_keys(tb_megamenu_load_extension_info('extension'));
+  foreach ($modules as $module) {
+    $name_function = $module . '_preprocess_tb_megamenu_backend';
+    if (function_exists($name_function)) {
+      $name_function($vars);
+    }
+  }
+}
+
+/**
+ * Theme function for tb_radios.
+ */
+function theme_tb_radios($vars) {
+  $output = '';
+  if (count($vars['element']['#options'])) {
+    foreach ($vars['element']['#options'] as $option) {
+      $option['radio_attributes']['type'] = 'radio';
+      $output .= '<input' . drupal_attributes($option['radio_attributes']) . ' />';
+      $output .= '<label' . drupal_attributes($option['label_attributes']) . ' />' . $option['label'] . '</label>';
+    }
+  }
+  return $output;
 }

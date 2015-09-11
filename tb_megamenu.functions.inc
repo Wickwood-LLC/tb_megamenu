@@ -412,9 +412,8 @@ function tb_megamenu_edit_block_config(&$block_config) {
     'auto-arrow' => TRUE,
     'duration' => 400,
     'delay' => 200,
-    'always-show-submenu' => 1,
-    'off-canvas' => 0
-  );
+      'always-show-submenu' => 1
+    ) + tb_megamenu_load_block_config_info();
 }
 
 function tb_megamenu_render_block($delta = 0) {
@@ -430,45 +429,22 @@ function tb_megamenu_render_block($delta = 0) {
   return $block;
 }
 
-function tb_megamenu_animation_options($block_config) {
-  $animations = array(
+function tb_megamenu_animation_options() {
+  return array(
     'none' => t('None'),
     'fading' => t('Fading'),
     'slide' => t('Slide'),
     'zoom' => t('Zoom'),
     'elastic' => t('Elastic')
   );
-  $options = array();
-  foreach ($animations as $value => $title) {
-    if ($value == $block_config['animation']) {
-      $options[] = '<option value="' . $value . '" selected="selected">' . $title . '</option>';
-    }
-    else {
-      $options[] = '<option value="' . $value . '">' . $title . '</option>';
-    }
-  }
-  return implode("\n", $options);
 }
 
-function tb_megamenu_style_options($block_config) {
-  $styles = array(
+function tb_megamenu_style_options() {
+  return array(
     '' => t('Default'),
     'blue' => t('Blue'),
     'green' => t('Green')
-  );
-
-  $styles += tb_megamenu_load_extension_info();
-
-  $options = array();
-  foreach ($styles as $value => $title) {
-    if ($value == $block_config['style']) {
-      $options[] = '<option value="' . $value . '" selected="selected">' . $title . '</option>';
-    }
-    else {
-      $options[] = '<option value="' . $value . '">' . $title . '</option>';
-    }
-  }
-  return implode("\n", $options);
+  ) + tb_megamenu_load_extension_info('theme');
 }
 
 function tb_megamenu_find_hook_templates($cache, $path) {
@@ -613,30 +589,27 @@ function tb_megamenu_update_megamenus(&$form, &$form_state) {
       tb_megamenu_sync_order_menus($menu_config);
       
       global $language;
-      $tb_megamenu = db_select('tb_megamenus', 't')
+      $item = db_select('tb_megamenus', 't')
         ->fields('t')
         ->condition('menu_name', $menu_name)
         ->condition('language', $language->language)
-        ->execute()->fetchObject();
-      if($tb_megamenu) {
-        db_update('tb_megamenus')
-          ->fields(array(
-            'menu_config' => json_encode($menu_config),
-            'block_config' => json_encode($block_config),
-            'language' => $language->language
-          ))
-          ->condition('menu_name', $menu_name)
-          ->condition('language', $language->language)
-          ->execute();
+        ->execute()->fetchAssoc();
+
+      $record = array(
+        'menu_name' => $menu_name,
+        'block_config' => json_encode($block_config),
+        'menu_config' => json_encode($menu_config),
+        'language' => $language->language
+      );
+
+      if ($item) {
+        drupal_write_record('tb_megamenus', $record, array(
+          'menu_name',
+          'language'
+        ));
       }
       else {
-        db_insert('tb_megamenus')
-          ->fields(array(
-            'menu_name' => $menu_name,
-            'block_config' => json_encode($block_config),
-            'menu_config' => json_encode($menu_config),
-            'language' => $language->language
-          ))->execute();
+        drupal_write_record('tb_megamenus', $record);
       }
     }
   }
@@ -645,38 +618,44 @@ function tb_megamenu_update_megamenus(&$form, &$form_state) {
 /**
  * Get the info of extension.
  *
+ * @param $type string
+ *  Type of extension.
+ *
  * @return array
  */
-function tb_megamenu_load_extension_info() {
-  $datas = &drupal_static(__FUNCTION__);
+function tb_megamenu_load_extension_info($type) {
+  $datas = &drupal_static(__FUNCTION__ . '_' . $type);
   if (!isset($datas)) {
+    $cache_id = ($type == 'theme') ? TB_MEGAMENU_THEME_CACHE_ID : TB_MEGAMENU_EXTENSION_CACHE_ID;
     // Get data from cache.
-    if ($cache = cache_get(TB_MEGAMENU_CACHE_ID)) {
+    if ($cache = cache_get($cache_id)) {
       $datas = $cache->data;
     }
     else {
-      // Create caching for info of extension.
-      $datas = _load_extension_info();
-      cache_set(TB_MEGAMENU_CACHE_ID, $datas);
+      // Create caching to store info of extensions.
+      $datas = _load_extension_info($type);
+      cache_set($cache_id, $datas);
     }
   }
   return $datas;
 }
 
-
 /**
  * Get the info of extension from the declared function (hooks).
  *
+ * @param $type string
+ *  Type of extension.
+ *
  * @return array
  */
-function _load_extension_info() {
+function _load_extension_info($type) {
   $datas = array();
   $modules = module_implements('tb_megamenu_extension_info');
   foreach ($modules as $module) {
     $function = $module . '_tb_megamenu_extension_info';
     if (function_exists($function)) {
       $data = $function();
-      if (!(empty($data['type']) || empty($data['title']))) {
+      if (isset($data['type']) && $data['type'] == $type && !empty($data['title'])) {
         $datas[$module] = t($data['title']);
       }
     }
@@ -684,3 +663,241 @@ function _load_extension_info() {
   return $datas;
 }
 
+/**
+ * Load configuration from modules which implement hook_tb_megamenu_block_config_info.
+ *
+ * @return array
+ */
+function tb_megamenu_load_block_config_info() {
+  $datas = &drupal_static(__FUNCTION__);
+  if (!isset($datas)) {
+    // Get data from cache.
+    if ($cache = cache_get(TB_MEGAMENU_BLOCK_CONFIG_CACHE_ID)) {
+      $datas = $cache->data;
+    }
+    else {
+      $datas = array();
+      // Create caching to store info of block configuration.
+      $modules = module_implements('tb_megamenu_block_config_info');
+      foreach ($modules as $module) {
+        $function = $module . '_tb_megamenu_block_config_info';
+        if (function_exists($function)) {
+          $datas += $function();
+        }
+      }
+      cache_set(TB_MEGAMENU_BLOCK_CONFIG_CACHE_ID, $datas);
+    }
+  }
+  return $datas;
+}
+
+/**
+ * Init items on Mega toolbox in Backend.
+ *
+ * @param $configs array Configuration in TB Mega Menu.
+ * @return array
+ */
+function tb_megamenu_init_megatoolbox_item($config) {
+  $items = array(
+    array(
+      'item_attributes' => array(
+        'id' => 'tb-megamenu-style-wrapper',
+        'title' => t('Select style for this megamenu'),
+      ),
+      'label' => t('Style'),
+      'label_attributes' => array(
+        'class' => array('hasTip'),
+      ),
+      'fieldset_attributes' => array(
+        'class' => array('btn-group')
+      ),
+      'data' => array(
+        'tb-megamenu-style' => array(
+          '#type' => 'select',
+          '#options' => tb_megamenu_style_options(),
+          '#default_value' => $config['style'],
+          '#attributes' => array('name' => 'tb-megamenu-style')
+        )
+      ),
+    ),
+    array(
+      'item_attributes' => array(
+        'id' => 'tb-megamenu-animation-wrapper',
+        'title' => t('Select animation for this megamenu - CSS3 Animation'),
+      ),
+      'label' => t('Animation'),
+      'label_attributes' => array('class' => array('hasTip')),
+      'fieldset_attributes' => array(
+        'class' => array('btn-group')
+      ),
+      'data' => array(
+        'tb-megamenu-animation' => array(
+          '#type' => 'select',
+          '#options' => tb_megamenu_animation_options(),
+          '#default_value' => $config['animation'],
+          '#attributes' => array('name' => 'tb-megamenu-animation')
+        )
+      )
+    ),
+    array(
+      'item_attributes' => array(
+        'id' => 'tb-megamenu-delay-wrapper',
+        'title' => t('Delay time of the animation - this field must be an integer.'),
+        'style' => 'display:' . ($config['animation'] == 'none' ? 'none' : 'inline-block')
+      ),
+      'label' => t('Delay (ms)'),
+      'label_attributes' => array('class' => array('hasTip')),
+      'fieldset_attributes' => array(
+        'class' => array('btn-group')
+      ),
+      'data' => array(
+        'tb-megamenu-delay' => array(
+          '#type' => 'textfield',
+          '#attributes' => array(
+            'class' => array('input-medium', 'toolitem-delay', 'toolbox-input'),
+            'data-name' => 'delay',
+            'name' => 'tb-megamenu-delay'
+          ),
+          '#value' => $config['delay'] ? $config['delay'] : 0
+        )
+      )
+    ),
+    array(
+      'item_attributes' => array(
+        'id' => 'tb-megamenu-duration-wrapper',
+        'title' => t('Duration of the animation - this field must be an integer.'),
+        'style' => 'display:' . ($config['animation'] == 'none' ? 'none' : 'inline-block')
+      ),
+      'label' => t('Duration (ms)'),
+      'label_attributes' => array('class' => array('hasTip')),
+      'fieldset_attributes' => array(
+        'class' => array('btn-group')
+      ),
+      'data' => array(
+        'tb-megamenu-duration' => array(
+          '#type' => 'textfield',
+          '#attributes' => array(
+            'class' => array(
+              'input-medium',
+              'toolitem-duration',
+              'toolbox-input'
+            ),
+            'data-name' => 'duration',
+            'name' => 'tb-megamenu-duration'
+          ),
+          '#value' => $config['duration'] ? $config['duration'] : 0
+        )
+      )
+    ),
+    array(
+      'label' => t('Auto arrow'),
+      'label_attributes' => array(
+        'class' => array('hasTip'),
+        'title' => t('Show/hide the arrow next to items that have submenu.')
+      ),
+      'fieldset_attributes' => array(
+        'class' => array('radio', 'btn-group', 'toolitem-auto-arrow'),
+        'data-auto-arrow' => $config['auto-arrow']
+      ),
+      'data' => array(
+        '#type' => 'tb_radios',
+        '#options' => array(
+          array(
+            'label' => t('No'),
+            'label_attributes' => array(
+              'for' => 'toggleAutoArrow0',
+              'class' => array(
+                'btn',
+                $config['auto-arrow'] ? '' : 'active btn-danger'
+              ),
+              'title' => t('Hide the arrow next to items that have submenu.')
+            ),
+            'radio_attributes' => array(
+              'data-action' => 'toggleAutoArrow',
+              'class' => array('toolbox-toggle'),
+              'id' => 'toggleAutoArrow0',
+              'checked' => $config['auto-arrow'] ? '' : 'checked',
+              'value' => 0,
+              'name' => 'tb-megamenu-always-show-submenu'
+            )
+          ),
+          array(
+            'label' => t('Yes'),
+            'label_attributes' => array(
+              'for' => 'toggleAutoArrow1',
+              'class' => array(
+                'btn',
+                $config['auto-arrow'] ? 'active btn-success' : ''
+              ),
+              'title' => t('Hide the arrow next to items that have submenu.')
+            ),
+            'radio_attributes' => array(
+              'data-action' => 'toggleAutoArrow',
+              'class' => array('toolbox-toggle'),
+              'id' => 'toggleAutoArrow1',
+              'checked' => $config['auto-arrow'] ? 'checked' : '',
+              'value' => 1,
+              'name' => 'tb-megamenu-always-show-submenu'
+            )
+          )
+        )
+      )
+    ),
+    array(
+      'label' => t('Always show submenu'),
+      'label_attributes' => array(
+        'class' => array('hasTip'),
+        'title' => t('Show or collapse submenus when browsing on small screens')
+      ),
+      'fieldset_attributes' => array(
+        'class' => array('radio', 'btn-group', 'toolitem-always-show-submenu'),
+        'data-always-show-submenu' => $config['always-show-submenu']
+      ),
+      'data' => array(
+        '#type' => 'tb_radios',
+        '#options' => array(
+          array(
+            'label' => t('No'),
+            'label_attributes' => array(
+              'for' => 'toggleAlwayShowSubmenu0',
+              'class' => array(
+                'btn',
+                $config['always-show-submenu'] ? '' : 'active btn-danger'
+              ),
+              'title' => t('Hide the arrow next to items that have submenu.')
+            ),
+            'radio_attributes' => array(
+              'data-action' => 'toggleAlwayShowSubmenu',
+              'class' => array('toolbox-toggle'),
+              'id' => 'toggleAlwayShowSubmenu0',
+              'checked' => $config['always-show-submenu'] ? '' : 'checked',
+              'value' => 0,
+              'name' => 'tb-megamenu-always-show-submenu'
+            )
+          ),
+          array(
+            'label' => t('Yes'),
+            'label_attributes' => array(
+              'for' => 'toggleAlwayShowSubmenu1',
+              'class' => array(
+                'btn',
+                $config['always-show-submenu'] ? 'active btn-success' : ''
+              ),
+              'title' => t('Hide the arrow next to items that have submenu.')
+            ),
+            'radio_attributes' => array(
+              'data-action' => 'toggleAlwayShowSubmenu',
+              'class' => array('toolbox-toggle'),
+              'id' => 'toggleAlwayShowSubmenu1',
+              'checked' => $config['always-show-submenu'] ? 'checked' : '',
+              'value' => 1,
+              'name' => 'tb-megamenu-always-show-submenu'
+            ),
+          ),
+        )
+      )
+    )
+  );
+
+  return $items;
+}
