@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * Register extension for TB Mega Menu.
+ */
+function tb_megamenu_offcanvas_tb_megamenu_extension_info() {
+  return array(
+    'title' => t('Off-canvas'),
+    'type' => 'extension'
+  );
+}
+
+/**
+ * Set default value to configuration.
+ */
+function tb_megamenu_offcanvas_tb_megamenu_block_config_info() {
+  return array(
+    'off-canvas' => 0
+  );
+}
+
+/**
+ * Implements hook_preprocess_tb_megamenu_backend().
+ */
+function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
+  $config = $vars['block_config'];
+  $options = array(
+    array(
+      'label' => t('No'),
+      'label_attributes' => array(
+        'for' => 'toggleAlwaysOffCanvas0',
+        'class' => array(
+          'btn',
+          $config['off-canvas'] ? '' : 'active btn-danger'
+        ),
+        'title' => t('Hide off-canvas menu')
+      ),
+      'radio_attributes' => array(
+        'class' => array('toolbox-toggle'),
+        'id' => 'toggleAlwaysOffCanvas0',
+        'value' => 0,
+        'name' => 'tb-megamenu-off-canvas'
+      )
+    ),
+    array(
+      'label' => t('Yes'),
+      'label_attributes' => array(
+        'for' => 'toggleAlwaysOffCanvas1',
+        'class' => array(
+          'btn',
+          $config['off-canvas'] ? 'active btn-success' : ''
+        ),
+        'title' => t('Show off-canvas menu')
+      ),
+      'radio_attributes' => array(
+        'class' => array('toolbox-toggle'),
+        'id' => 'toggleAlwaysOffCanvas1',
+        'value' => 1,
+        'name' => 'tb-megamenu-off-canvas'
+      ),
+    ),
+  );
+  $options[$config['off-canvas'] ? 1 : 0]['radio_attributes']['checked'] = 'checked';
+
+  $vars['mega_toolbox_items'][] = array(
+    'label' => t('Off Canvas'),
+    'label_attributes' => array(
+      'class' => array('hasTip'),
+      'title' => t('Display off-canvas menu')
+    ),
+    'fieldset_attributes' => array(
+      'class' => array('radio', 'btn-group', 'off-canvas')
+    ),
+    'data' => array(
+      '#type' => 'tb_radios',
+      '#options' => $options
+    )
+  );
+
+  drupal_add_js(drupal_get_path('module', 'tb_megamenu_offcanvas') . '/tb_megamenu_offcanvas.js');
+}
