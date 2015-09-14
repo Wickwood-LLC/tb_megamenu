@@ -14,9 +14,7 @@ function tb_megamenu_offcanvas_tb_megamenu_extension_info() {
  * Set default value to configuration.
  */
 function tb_megamenu_offcanvas_tb_megamenu_block_config_info() {
-  return array(
-    'off-canvas' => 0
-  );
+  return array('off-canvas' => 0);
 }
 
 /**
@@ -57,8 +55,8 @@ function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
         'id' => 'toggleAlwaysOffCanvas1',
         'value' => 1,
         'name' => 'tb-megamenu-off-canvas'
-      ),
-    ),
+      )
+    )
   );
   $options[$config['off-canvas'] ? 1 : 0]['radio_attributes']['checked'] = 'checked';
 
@@ -78,4 +76,28 @@ function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
   );
 
   drupal_add_js(drupal_get_path('module', 'tb_megamenu_offcanvas') . '/tb_megamenu_offcanvas.js');
+}
+
+/**
+ * Implements hook_tb_megamenu_save_config().
+ */
+function tb_megamenu_offcanvas_tb_megamenu_save_config($menu_name, $language, $data) {
+  if ($menu_name && $language && !empty($data['off-canvas'])) {
+    $primary_keys = db_select('tb_megamenu_offcanvas', 'offcanvas')
+      ->fields('offcanvas', array('menu_name', 'language'))
+      ->condition('menu_name', $menu_name)
+      ->condition('language', $language)
+      ->execute()
+      ->fetchAssoc();
+    $record = array(
+      'menu_name' => $menu_name,
+      'language' => $language,
+      'config' => $data['off-canvas']
+    );
+    // Update record.
+    drupal_write_record('tb_megamenu_offcanvas', $record, $primary_keys ? array(
+      'menu_name',
+      'language'
+    ) : array());
+  }
 }
