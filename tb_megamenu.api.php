@@ -20,3 +20,10 @@ function hook_tb_megamenu_block_config_info() {
     'config-item' => 'value'
   );
 }
+
+/**
+ *  Allow another extension to save configuration when the saving process is fired
+ */
+function hook_tb_megamenu_save_config($menu_name, $language, $data) {
+
+}
