@@ -14,27 +14,30 @@ function tb_megamenu_request() {
       $block_config = isset($_POST['block_config']) ? $_POST['block_config'] : NULL;
       $menu_name = isset($_POST['menu_name']) ? $_POST['menu_name'] : NULL;
       if($menu_config && $menu_name) {
+        // Save configuration.
+        foreach (module_implements('tb_megamenu_save_config') as $module) {
+          $function = $module . '_tb_megamenu_save_config';
+          if (function_exists($function)) {
+            $function($menu_name, $language->language, $_POST);
+          }
+        }
         $primary_keys = db_select('tb_megamenus', 't')
                         ->fields('t', array('menu_name', 'language'))
                         ->condition('menu_name', $menu_name)
                         ->condition('language', $language->language)
                         ->execute()
                         ->fetchAssoc();
-
         $record = array(
           'menu_name' => $menu_name,
           'block_config' => $block_config,
           'menu_config' => $menu_config,
           'language' => $language->language
         );
-        if ($primary_keys) {
-          // Update record.
-          print drupal_write_record('tb_megamenus', $record, array('menu_name','language'));
-        }
-        else {
-          // Insert Record.
-          print drupal_write_record('tb_megamenus', $record);
-        }
+
+        print drupal_write_record('tb_megamenus', $record, $primary_keys ? array(
+          'menu_name',
+          'language'
+        ) : NULL);
       }
       break;
 
