@@ -698,6 +698,46 @@ function tb_megamenu_load_block_config_info() {
  * @return array
  */
 function tb_megamenu_init_megatoolbox_item($config) {
+  $show_submenu_options = array(
+    array(
+      'label' => t('No'),
+      'label_attributes' => array(
+        'for' => 'toggleAlwayShowSubmenu0',
+        'class' => array(
+          'btn',
+          $config['always-show-submenu'] ? '' : 'active btn-danger'
+        ),
+        'title' => t('Hide the arrow next to items that have submenu.')
+      ),
+      'radio_attributes' => array(
+        'data-action' => 'toggleAlwayShowSubmenu',
+        'class' => array('toolbox-toggle'),
+        'id' => 'toggleAlwayShowSubmenu0',
+        'value' => 0,
+        'name' => 'tb-megamenu-always-show-submenu'
+      )
+    ),
+    array(
+      'label' => t('Yes'),
+      'label_attributes' => array(
+        'for' => 'toggleAlwayShowSubmenu1',
+        'class' => array(
+          'btn',
+          $config['always-show-submenu'] ? 'active btn-success' : ''
+        ),
+        'title' => t('Hide the arrow next to items that have submenu.')
+      ),
+      'radio_attributes' => array(
+        'data-action' => 'toggleAlwayShowSubmenu',
+        'class' => array('toolbox-toggle'),
+        'id' => 'toggleAlwayShowSubmenu1',
+        'value' => 1,
+        'name' => 'tb-megamenu-always-show-submenu'
+      )
+    )
+  );
+  $show_submenu_options[$config['always-show-submenu'] ? 1 : 0]['radio_attributes']['checked'] = 'checked';
+
   $items = array(
     array(
       'item_attributes' => array(
@@ -855,49 +895,9 @@ function tb_megamenu_init_megatoolbox_item($config) {
       ),
       'data' => array(
         '#type' => 'tb_radios',
-        '#options' => array(
-          array(
-            'label' => t('No'),
-            'label_attributes' => array(
-              'for' => 'toggleAlwayShowSubmenu0',
-              'class' => array(
-                'btn',
-                $config['always-show-submenu'] ? '' : 'active btn-danger'
-              ),
-              'title' => t('Hide the arrow next to items that have submenu.')
-            ),
-            'radio_attributes' => array(
-              'data-action' => 'toggleAlwayShowSubmenu',
-              'class' => array('toolbox-toggle'),
-              'id' => 'toggleAlwayShowSubmenu0',
-              'checked' => $config['always-show-submenu'] ? '' : 'checked',
-              'value' => 0,
-              'name' => 'tb-megamenu-always-show-submenu'
-            )
-          ),
-          array(
-            'label' => t('Yes'),
-            'label_attributes' => array(
-              'for' => 'toggleAlwayShowSubmenu1',
-              'class' => array(
-                'btn',
-                $config['always-show-submenu'] ? 'active btn-success' : ''
-              ),
-              'title' => t('Hide the arrow next to items that have submenu.')
-            ),
-            'radio_attributes' => array(
-              'data-action' => 'toggleAlwayShowSubmenu',
-              'class' => array('toolbox-toggle'),
-              'id' => 'toggleAlwayShowSubmenu1',
-              'checked' => $config['always-show-submenu'] ? 'checked' : '',
-              'value' => 1,
-              'name' => 'tb-megamenu-always-show-submenu'
-            ),
-          ),
-        )
+        '#options' => $show_submenu_options
       )
     )
   );
-
   return $items;
 }

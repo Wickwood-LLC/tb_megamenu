@@ -4,7 +4,6 @@
  * Implementation of hook_schema().
  */
 function tb_megamenu_schema() {
-  $schema = array();
   $schema['tb_megamenus'] = array(
     'fields' => array(
       'menu_name' => array(
@@ -65,10 +64,7 @@ function tb_megamenu_update_7101(&$sandbox) {
     'default' => '',
   );
   $keys_new = array(
-    'primary key' => array(
-      'menu_name',
-      'language'
-    ),
+    'primary key' => array('menu_name', 'language')
   );
   db_add_field('tb_megamenus', 'language', $field, $keys_new);
 
