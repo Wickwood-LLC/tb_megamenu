@@ -558,7 +558,11 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
       'action': 'save',
       'menu_name': options['menu_name'],
       'menu_config': JSON.stringify(menu_config),
-      'block_config': JSON.stringify(block_config)
+      'block_config': JSON.stringify(block_config),
+      'off-canvas': JSON.stringify({
+        'test': 'test1',
+        'test_data': 'data'
+      })
     };
 
     $.ajax({
