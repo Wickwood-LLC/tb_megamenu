@@ -550,20 +550,16 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     $('#tb-megamenu-admin-mm-tb #toolbox-message').html("").hide();
     $('#tb-megamenu-admin-mm-tb #toolbox-loading').show();
 
-    // Preparing data to store.
-    for (key in Drupal.TBMegaMenu.extensions) {
-      block_config = Object.assign(block_config, Drupal.TBMegaMenu.extensions[key].prepareToSave());
-    }
     var data = {
       'action': 'save',
       'menu_name': options['menu_name'],
       'menu_config': JSON.stringify(menu_config),
-      'block_config': JSON.stringify(block_config),
-      'off-canvas': JSON.stringify({
-        'test': 'test1',
-        'test_data': 'data'
-      })
+      'block_config': JSON.stringify(block_config)
     };
+    // Preparing data to store.
+    for (key in Drupal.TBMegaMenu.extensions) {
+      data = Object.assign(data, Drupal.TBMegaMenu.extensions[key].prepareToSave());
+    }
 
     $.ajax({
       type: "POST",
