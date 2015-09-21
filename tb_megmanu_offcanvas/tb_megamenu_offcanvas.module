@@ -21,7 +21,7 @@ function tb_megamenu_offcanvas_tb_megamenu_block_config_info() {
  * Implements hook_preprocess_tb_megamenu_backend().
  */
 function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
-  $config = $vars['block_config'];
+  $status = _check_offcanvas_status($vars['menu_name'], $GLOBALS['language']->language);
   $options = array(
     array(
       'label' => t('No'),
@@ -29,7 +29,7 @@ function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
         'for' => 'toggleAlwaysOffCanvas0',
         'class' => array(
           'btn',
-          $config['off-canvas'] ? '' : 'active btn-danger'
+          $status ? '' : 'active btn-danger'
         ),
         'title' => t('Hide off-canvas menu')
       ),
@@ -46,7 +46,7 @@ function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
         'for' => 'toggleAlwaysOffCanvas1',
         'class' => array(
           'btn',
-          $config['off-canvas'] ? 'active btn-success' : ''
+          $status ? 'active btn-success' : ''
         ),
         'title' => t('Show off-canvas menu')
       ),
@@ -58,7 +58,7 @@ function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
       )
     )
   );
-  $options[$config['off-canvas'] ? 1 : 0]['radio_attributes']['checked'] = 'checked';
+  $options[$status ? 1 : 0]['radio_attributes']['checked'] = 'checked';
 
   $vars['mega_toolbox_items'][] = array(
     'label' => t('Off Canvas'),
@@ -82,22 +82,54 @@ function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
  * Implements hook_tb_megamenu_save_config().
  */
 function tb_megamenu_offcanvas_tb_megamenu_save_config($menu_name, $language, $data) {
-  if ($menu_name && $language && !empty($data['off-canvas'])) {
+  if ($menu_name && $language && !empty($data['off_canvas'])) {
     $primary_keys = db_select('tb_megamenu_offcanvas', 'offcanvas')
       ->fields('offcanvas', array('menu_name', 'language'))
       ->condition('menu_name', $menu_name)
       ->condition('language', $language)
       ->execute()
       ->fetchAssoc();
+
     $record = array(
       'menu_name' => $menu_name,
       'language' => $language,
-      'config' => $data['off-canvas']
+      'status' => $data['off_canvas']['status'],
+      'config' => $data['off_canvas']['config']
     );
+
     // Update record.
     drupal_write_record('tb_megamenu_offcanvas', $record, $primary_keys ? array(
       'menu_name',
       'language'
     ) : array());
   }
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function tb_megamenu_offcanvas_page_alter(&$page) {
+  // Create slot for off-canvas.
+  if (variable_get('theme_default', '') == $GLOBALS['theme']) {
+    $page['page_top']['off_canvas'] = variable_get('tb_megamenu_offcanvas', '');
+  }
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function tb_megamenu_offcanvas_block_view($delta) {
+}
+
+
+/**
+ * Check status of off-canvas.
+ */
+function _check_offcanvas_status($menu_name, $language) {
+  $query = db_select('tb_megamenu_offcanvas', 'offcanvas');
+  $query->addField('offcanvas', 'status');
+  return $query->condition('menu_name', $menu_name)
+    ->condition('language', $language)
+    ->execute()
+    ->fetchField();
 }

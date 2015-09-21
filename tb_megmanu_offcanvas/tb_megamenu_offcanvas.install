@@ -16,6 +16,12 @@ function tb_megamenu_offcanvas_schema() {
           'type' => 'text',
           'not null' => FALSE
         ),
+        'status' => array(
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => FALSE,
+          'default' => 0
+        ),
         'language' => array(
           'type' => 'varchar',
           'length' => '12',
