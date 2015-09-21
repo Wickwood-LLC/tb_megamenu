@@ -624,8 +624,8 @@ function tb_megamenu_update_megamenus(&$form, &$form_state) {
  * @return array
  */
 function tb_megamenu_load_extension_info($type) {
-  $datas = &drupal_static(__FUNCTION__ . '_' . $type);
-  if (!isset($datas)) {
+  $datas = &drupal_static(__FUNCTION__ . '_' . $type, array());
+  if (empty($datas)) {
     $cache_id = ($type == 'theme') ? TB_MEGAMENU_THEME_CACHE_ID : TB_MEGAMENU_EXTENSION_CACHE_ID;
     // Get data from cache.
     if ($cache = cache_get($cache_id)) {
@@ -900,4 +900,16 @@ function tb_megamenu_init_megatoolbox_item($config) {
     )
   );
   return $items;
+}
+
+/**
+ * Execute function if it's existed.
+ *
+ * @param string $name
+ * @param $arguments
+ */
+function _execute_function($name, $arguments) {
+  if (function_exists($name)) {
+    call_user_func_array($name, $arguments);
+  }
 }
