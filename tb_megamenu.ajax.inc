@@ -14,7 +14,7 @@ function tb_megamenu_request() {
       $block_config = isset($_POST['block_config']) ? $_POST['block_config'] : NULL;
       $menu_name = isset($_POST['menu_name']) ? $_POST['menu_name'] : NULL;
       if($menu_config && $menu_name) {
-        // Save configuration.
+        // Invoke modules which implement hook_tb_megamenu_save_config().
         foreach (module_implements('tb_megamenu_save_config') as $module) {
           $function = $module . '_tb_megamenu_save_config';
           if (function_exists($function)) {
@@ -33,7 +33,6 @@ function tb_megamenu_request() {
           'menu_config' => $menu_config,
           'language' => $language->language
         );
-
         print drupal_write_record('tb_megamenus', $record, $primary_keys ? array(
           'menu_name',
           'language'
