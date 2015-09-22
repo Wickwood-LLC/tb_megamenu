@@ -908,8 +908,8 @@ function tb_megamenu_init_megatoolbox_item($config) {
  * @param string $name
  * @param $arguments
  */
-function _execute_function($name, $arguments) {
+function _execute_preprocess_function($name, &$arguments) {
   if (function_exists($name)) {
-    call_user_func_array($name, $arguments);
+    $name($arguments);
   }
 }

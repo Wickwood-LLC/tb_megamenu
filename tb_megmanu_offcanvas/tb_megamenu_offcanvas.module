@@ -97,7 +97,7 @@ function tb_megamenu_offcanvas_tb_megamenu_save_config($menu_name, $language, $d
       'config' => $data['off_canvas']['config']
     );
 
-    // Update record.
+    // Update or insert record.
     drupal_write_record('tb_megamenu_offcanvas', $record, $primary_keys ? array(
       'menu_name',
       'language'
@@ -110,17 +110,21 @@ function tb_megamenu_offcanvas_tb_megamenu_save_config($menu_name, $language, $d
  */
 function tb_megamenu_offcanvas_page_alter(&$page) {
   // Create slot for off-canvas.
-  if (variable_get('theme_default', '') == $GLOBALS['theme']) {
-    $page['page_top']['off_canvas'] = variable_get('tb_megamenu_offcanvas', '');
+  $tb_megamenu_offcanvas = drupal_static('offcanvas_blocks', array());
+  if (variable_get('theme_default', '') == $GLOBALS['theme'] && $tb_megamenu_offcanvas) {
+    $page['page_top']['offcanvas'] = 'offcanvas block';
   }
 }
 
 /**
- * Implements hook_block_view().
+ * Implements hook_block_view_alter().
  */
-function tb_megamenu_offcanvas_block_view($delta) {
+function tb_megamenu_offcanvas_block_view_alter(&$data, $block) {
+  if ($block->module == 'tb_megamenu' && $block->status) {
+    $tb_megamenu_offcanvas = &drupal_static('offcanvas_blocks', array());
+    $tb_megamenu_offcanvas[$block->bid] = $block->delta;
+  }
 }
-
 
 /**
  * Check status of off-canvas.
