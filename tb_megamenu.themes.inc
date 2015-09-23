@@ -104,7 +104,7 @@ function template_preprocess_tb_megamenu_nav(&$vars) {
 
   // Load preprocess function from the selected style.
   if ($vars['selected_style']) {
-    _execute_preprocess_function($vars['selected_style'] . '_preprocess_tb_megamenu_nav', array($vars));
+    _execute_preprocess_function($vars['selected_style'] . '_preprocess_tb_megamenu_nav', $vars);
   }
 
   // Load preprocess function from the selected extensions.

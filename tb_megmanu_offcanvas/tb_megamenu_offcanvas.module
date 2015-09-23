@@ -78,6 +78,10 @@ function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
   drupal_add_js(drupal_get_path('module', 'tb_megamenu_offcanvas') . '/tb_megamenu_offcanvas.js');
 }
 
+function tb_megamenu_offcanvas_preprocess_tb_megamenu_nav(&$vars) {
+  $vars['off_canvas'] = _check_offcanvas_status($vars['menu_name'], $GLOBALS['language']->language);
+}
+
 /**
  * Implements hook_tb_megamenu_save_config().
  */
@@ -112,7 +116,16 @@ function tb_megamenu_offcanvas_page_alter(&$page) {
   // Create slot for off-canvas.
   $tb_megamenu_offcanvas = drupal_static('offcanvas_blocks', array());
   if (variable_get('theme_default', '') == $GLOBALS['theme'] && $tb_megamenu_offcanvas) {
-    $page['page_top']['offcanvas'] = 'offcanvas block';
+    $query = db_select('tb_megamenu_offcanvas', 'offcanvas');
+    $query->addField('offcanvas', 'config');
+    $config = $query->condition('menu_name', $tb_megamenu_offcanvas, 'IN')
+      ->condition('language', $GLOBALS['language']->language)
+      ->execute()
+      ->fetchField();
+
+    if ($config) {
+      //$page['page_top']['offcanvas'] = theme('off_canvas', array('config' => $config));
+    }
   }
 }
 
@@ -130,10 +143,14 @@ function tb_megamenu_offcanvas_block_view_alter(&$data, $block) {
  * Check status of off-canvas.
  */
 function _check_offcanvas_status($menu_name, $language) {
-  $query = db_select('tb_megamenu_offcanvas', 'offcanvas');
-  $query->addField('offcanvas', 'status');
-  return $query->condition('menu_name', $menu_name)
-    ->condition('language', $language)
-    ->execute()
-    ->fetchField();
+  $status = &drupal_static(__FUNCTION__);
+  if (!isset($status)) {
+    $query = db_select('tb_megamenu_offcanvas', 'offcanvas');
+    $query->addField('offcanvas', 'status');
+    $status = $query->condition('menu_name', $menu_name)
+      ->condition('language', $language)
+      ->execute()
+      ->fetchField();
+  }
+  return $status;
 }
