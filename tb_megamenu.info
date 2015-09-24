@@ -4,6 +4,4 @@ package = Menu
 version = VERSION
 core = 7.x
 
-dependencies[] = libraries
-dependencies[] = jquery_update
 configure = admin/structure/tb-megamenu

@@ -79,7 +79,11 @@ function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
 }
 
 function tb_megamenu_offcanvas_preprocess_tb_megamenu_nav(&$vars) {
-  $vars['off_canvas'] = _check_offcanvas_status($vars['menu_name'], $GLOBALS['language']->language);
+  $offCanvasStatus = _check_offcanvas_status($vars['menu_name'], $GLOBALS['language']->language);  
+  if($offCanvasStatus){
+    $offCanvas = theme_render_template(drupal_get_path('module', 'tb_megamenu_offcanvas'). '/tb_megamenu_offcanvas_item.tpl.php', array());
+    $vars['lis'] = $offCanvas.$vars['lis'];
+  }
 }
 
 /**
