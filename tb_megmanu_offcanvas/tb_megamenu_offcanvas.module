@@ -143,7 +143,7 @@ function tb_megamenu_offcanvas_block_view_alter(&$data, $block) {
  * Check status of off-canvas.
  */
 function _check_offcanvas_status($menu_name, $language) {
-  $status = &drupal_static(__FUNCTION__);
+  $status = &drupal_static(__FUNCTION__ . '_' . $menu_name);
   if (!isset($status)) {
     $query = db_select('tb_megamenu_offcanvas', 'offcanvas');
     $query->addField('offcanvas', 'status');
