@@ -130,6 +130,7 @@ function template_preprocess_tb_megamenu_item(&$vars) {
       'menu_name' => $vars['menu_name'],
       'parent' => $item,
       'level' => $level,
+      'menu_item_config' => $menu_config[$mlid],
       'menu_config' => $vars['menu_config'],
       'block_config' => $vars['block_config'],
       'trail' => $vars['trail'],
@@ -209,9 +210,10 @@ function template_preprocess_tb_megamenu_item(&$vars) {
 
 function template_preprocess_tb_megamenu_submenu(&$vars) {
   $parent = $vars['parent'];
-  $mlid = $parent['link']['mlid'];
-  $menu_config = $vars['menu_config'];
-  $item_config = isset($menu_config[$mlid]) ? $menu_config[$mlid] : array();
+//  $mlid = $parent['link']['mlid'];
+//  $menu_config = $vars['menu_config'];
+//  $item_config = isset($menu_config[$mlid]) ? $menu_config[$mlid] : array();
+  $item_config = $vars['menu_item_config'];  
   $submenu_config = isset($item_config['submenu_config']) ? $item_config['submenu_config'] : array();
   $vars['submenu_config'] = $submenu_config;
   tb_megamenu_edit_submenu_config($submenu_config);

@@ -81,7 +81,30 @@ function tb_megamenu_offcanvas_preprocess_tb_megamenu_backend(&$vars) {
 function tb_megamenu_offcanvas_preprocess_tb_megamenu_nav(&$vars) {
   $offCanvasStatus = _check_offcanvas_status($vars['menu_name'], $GLOBALS['language']->language);  
   if($offCanvasStatus){
-    $offCanvas = theme_render_template(drupal_get_path('module', 'tb_megamenu_offcanvas'). '/tb_megamenu_offcanvas_item.tpl.php', array());
+    $query = db_select('tb_megamenu_offcanvas', 'm');        
+    $query->addField('m', 'config');
+    $query->condition('m.menu_name', $vars['menu_name']);
+    $query->condition('m.language', $GLOBALS['language']->language);
+    $data = $query->execute()->fetch();
+    $offCanvasConfig = $data && isset($data->config) ? json_decode($data->config, true) : false;    
+    
+    if($vars['section'] != 'backend') $offCanvasContent = 'empty';    
+    else 
+      $offCanvasContent = (!$offCanvasConfig || empty($offCanvasConfig['rows_content'])) ? 'empty_sub' : 
+        theme('tb_megamenu_submenu', array(
+          'menu_name' => $vars['menu_name'],
+          'parent' => array(),
+          'level' => $vars['level'],
+          'menu_item_config' => $offCanvasConfig,
+          'menu_config' => $vars['menu_config'],
+          'block_config' => $vars['block_config'],
+          'trail' => $vars['trail'],
+          'section' => $vars['section'],
+          'selected_style' => $vars['selected_style'],
+          'extensions' => $vars['extensions']
+        ));
+    
+    $offCanvas = theme_render_template(drupal_get_path('module', 'tb_megamenu_offcanvas'). '/tb_megamenu_offcanvas_item.tpl.php', array('offcanvas_content'=>$offCanvasContent));
     $vars['lis'] = $offCanvas.$vars['lis'];
   }
 }

@@ -563,7 +563,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     for (key in Drupal.TBMegaMenu.extensions) {
       data = Object.assign(data, Drupal.TBMegaMenu.extensions[key].prepareToSave());
     }
-
+    
     $.ajax({
       type: "POST",
       url: Drupal.settings.basePath + Drupal.settings.pathPrefix + Drupal.TBMegaMenu.ajax_link + "admin/structure/tb-megamenu/request",
