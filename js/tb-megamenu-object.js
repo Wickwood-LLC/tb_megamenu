@@ -467,6 +467,66 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     });
   };
 
+  Drupal.TBMegaMenu.getItemData = function($this){
+    var rows = [];
+    var level = parseInt($this.attr('data-level'));
+    var $sub = $this.find('.nav-child:first');
+    var $rows = $sub.find('[class*="row"]:first').parent().children('[class*="row"]');
+    $rows.each(function () {
+      var $cols = $(this).children('[class*="span"]');
+      var cols = [];
+      $cols.each(function () {
+        var col_config = {};
+        col_config['width'] = $(this).attr('data-width') ? $(this).attr('data-width') : "";
+        col_config['class'] = $(this).attr('data-class') ? $(this).attr('data-class') : "";
+        col_config['hidewcol'] = $(this).attr('data-hidewcol') ? $(this).attr('data-hidewcol') : "";
+        col_config['showblocktitle'] = $(this).attr('data-showblocktitle') ? $(this).attr('data-showblocktitle') : "1";
+        var col = {'col_content': [], 'col_config': col_config};
+        $(this).find('ul[class*="level"] > li:first').each(function () {
+          var sub_level = parseInt($(this).attr('data-level'));
+          if (sub_level == level + 1) {
+            var ele = {};
+            ele['mlid'] = $(this).attr('data-id');
+            ele['type'] = $(this).attr('data-type');
+            ele['tb_item_config'] = {};
+            col['col_content'].push(ele);
+          }
+        });
+        $(this).children('.mega-inner').children('.tb-megamenu-block').each(function () {
+          var ele = {};
+          ele['block_key'] = $(this).attr('data-block');
+          ele['type'] = $(this).attr('data-type');
+          ele['tb_item_config'] = {};
+          col['col_content'].push(ele);
+        });
+        if (col['col_content'].length) {
+          cols.push(col);
+        }
+      });
+      if (cols.length) {
+        rows.push(cols);
+      }
+    });
+    var submenu_config = {};
+    submenu_config['width'] = $this.children('.mega-dropdown-menu').attr('data-width') ? $this.children('.mega-dropdown-menu').attr('data-width') : "";
+    submenu_config['class'] = $this.children('.mega-dropdown-menu').attr('data-class') ? $this.children('.mega-dropdown-menu').attr('data-class') : "";
+    submenu_config['group'] = $this.attr('data-group') ? $this.attr('data-group') : 0;
+    var item_config = {};
+    item_config['class'] = $this.attr('data-class') ? $this.attr('data-class') : "";
+    item_config['xicon'] = $this.attr('data-xicon') ? $this.attr('data-xicon') : "";
+    item_config['caption'] = $this.attr('data-caption') ? $this.attr('data-caption') : "";
+    item_config['alignsub'] = $this.attr('data-alignsub') ? $this.attr('data-alignsub') : "";
+    item_config['group'] = $this.attr('data-group') ? $this.attr('data-group') : "";
+    item_config['hidewcol'] = $this.attr('data-hidewcol') ? $this.attr('data-hidewcol') : 1;
+    item_config['hidesub'] = $this.attr('data-hidesub') ? $this.attr('data-hidesub') : 1;
+    config = {
+      'rows_content': rows,
+      'submenu_config': submenu_config,
+      'item_config': item_config
+    };
+    return config;
+  }
+  
   actions.saveConfig = function (options) {
     if (Drupal.TBMegaMenu.isLockedAjax()) {
       window.setTimeout(function () {
@@ -476,68 +536,11 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
     }
     Drupal.TBMegaMenu.lockAjax();
     var menu_config = {},
-      items = megamenu.find('ul[class*="level"] > li');
+      items = megamenu.find('ul[class*="level"] > li.tb-megamenu-item');
 
     items.each(function () {
-      var $this = $(this),
-        id = $this.attr('data-id'),
-        rows = [];
-      var level = parseInt($this.attr('data-level'));
-      var $sub = $this.find('.nav-child:first');
-      var $rows = $sub.find('[class*="row"]:first').parent().children('[class*="row"]');
-      $rows.each(function () {
-        var $cols = $(this).children('[class*="span"]');
-        var cols = [];
-        $cols.each(function () {
-          var col_config = {};
-          col_config['width'] = $(this).attr('data-width') ? $(this).attr('data-width') : "";
-          col_config['class'] = $(this).attr('data-class') ? $(this).attr('data-class') : "";
-          col_config['hidewcol'] = $(this).attr('data-hidewcol') ? $(this).attr('data-hidewcol') : "";
-          col_config['showblocktitle'] = $(this).attr('data-showblocktitle') ? $(this).attr('data-showblocktitle') : "1";
-          var col = {'col_content': [], 'col_config': col_config};
-          $(this).find('ul[class*="level"] > li:first').each(function () {
-            var sub_level = parseInt($(this).attr('data-level'));
-            if (sub_level == level + 1) {
-              var ele = {};
-              ele['mlid'] = $(this).attr('data-id');
-              ele['type'] = $(this).attr('data-type');
-              ele['tb_item_config'] = {};
-              col['col_content'].push(ele);
-            }
-          });
-          $(this).children('.mega-inner').children('.tb-megamenu-block').each(function () {
-            var ele = {};
-            ele['block_key'] = $(this).attr('data-block');
-            ele['type'] = $(this).attr('data-type');
-            ele['tb_item_config'] = {};
-            col['col_content'].push(ele);
-          });
-          if (col['col_content'].length) {
-            cols.push(col);
-          }
-        });
-        if (cols.length) {
-          rows.push(cols);
-        }
-      });
-      var submenu_config = {};
-      submenu_config['width'] = $this.children('.mega-dropdown-menu').attr('data-width') ? $this.children('.mega-dropdown-menu').attr('data-width') : "";
-      submenu_config['class'] = $this.children('.mega-dropdown-menu').attr('data-class') ? $this.children('.mega-dropdown-menu').attr('data-class') : "";
-      submenu_config['group'] = $this.attr('data-group') ? $this.attr('data-group') : 0;
-      var item_config = {};
-      item_config['class'] = $this.attr('data-class') ? $this.attr('data-class') : "";
-      item_config['xicon'] = $this.attr('data-xicon') ? $this.attr('data-xicon') : "";
-      item_config['caption'] = $this.attr('data-caption') ? $this.attr('data-caption') : "";
-      item_config['alignsub'] = $this.attr('data-alignsub') ? $this.attr('data-alignsub') : "";
-      item_config['group'] = $this.attr('data-group') ? $this.attr('data-group') : "";
-      item_config['hidewcol'] = $this.attr('data-hidewcol') ? $this.attr('data-hidewcol') : 1;
-      item_config['hidesub'] = $this.attr('data-hidesub') ? $this.attr('data-hidesub') : 1;
-      config = {
-        'rows_content': rows,
-        'submenu_config': submenu_config,
-        'item_config': item_config
-      };
-      menu_config[id] = config;
+      var $this = $(this);
+      menu_config[$this.attr('data-id')] = Drupal.TBMegaMenu.getItemData($this);
     });
 
     var block_config = {};
