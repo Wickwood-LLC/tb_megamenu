@@ -1,3 +1,3 @@
 <div <?php print $attributes;?> class="<?php print $classes;?>">
-  <?php print $columns;?>
+  <?php print drupal_render($columns); ?>
 </div>

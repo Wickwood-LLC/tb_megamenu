@@ -5,7 +5,7 @@
     </button>
     <div class="nav-collapse <?php print $block_config['always-show-submenu'] ? ' always-show' : '';?>">
   <?php endif;?>
-  <?php print $content;?>
+  <?php print drupal_render($content); ?>
   <?php if($section == 'frontend') :?>
     </div>
   <?php endif;?>

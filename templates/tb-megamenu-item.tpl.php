@@ -11,5 +11,5 @@
       <span class="mega-caption"><?php print t($item_config['caption']);?></span>
     <?php endif;?>
   </a>
-  <?php print $submenu ? $submenu : "";?>
+  <?php print $submenu ? drupal_render($submenu) : ''; ?>
 </li>

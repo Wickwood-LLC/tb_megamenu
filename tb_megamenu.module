@@ -92,6 +92,8 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
       'block_config' => NULL,
       'trail' => NULL,
       'section' => 'frontend',
+      'selected_style' => NULL,
+      'extensions' => array()
     ),
     'template' => 'tb-megamenu-nav',
     'path' => $path . '/templates',
@@ -111,6 +113,8 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
       'trail' => NULL,
       'submenu' => NULL,
       'section' => 'frontend',
+      'selected_style' => NULL,
+      'extensions' => array()
     ),
     'template' => 'tb-megamenu-item',
     'path' => $path . '/templates',
@@ -124,10 +128,13 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
       'menu_name' => NULL,
       'parent' => NULL,
       'level' => NULL,
+      'menu_item_config' => NULL,
       'menu_config' => NULL,
       'block_config' => NULL,
       'trail' => NULL,
       'section' => 'frontend',
+      'selected_style' => NULL,
+      'extensions' => array()
     ),
     'template' => 'tb-megamenu-submenu',
     'path' => $path . '/templates',
@@ -146,6 +153,8 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
       'block_config' => NULL,
       'trail' => NULL,
       'section' => 'frontend',
+      'selected_style' => NULL,
+      'extensions' => array()
     ),
     'template' => 'tb-megamenu-row',
     'path' => $path . '/templates',
@@ -164,6 +173,8 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
       'block_config' => NULL,
       'trail' => NULL,
       'section' => 'frontend',
+      'selected_style' => NULL,
+      'extensions' => array()
     ),
     'template' => 'tb-megamenu-column',
     'path' => $path . '/templates',
@@ -182,6 +193,8 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
       'block_config' => NULL,
       'trail' => NULL,
       'section' => 'frontend',
+      'selected_style' => NULL,
+      'extensions' => array()
     ),
     'template' => 'tb-megamenu-subnav',
     'path' => $path . '/templates',
@@ -196,6 +209,8 @@ function tb_megamenu_theme($existing, $type, $theme, $path) {
       'block_key' => NULL,
       'section' => 'frontend',
       'showblocktitle' => 1,
+      'selected_style' => NULL,
+      'extensions' => array()
     ),
     'template' => 'tb-megamenu-block',
     'path' => $path . '/templates',

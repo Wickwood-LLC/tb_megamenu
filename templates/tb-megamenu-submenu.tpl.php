@@ -1,5 +1,5 @@
 <div <?php print $attributes;?> class="<?php print $classes;?>">
   <div class="mega-dropdown-inner">
-    <?php print $rows;?>
+    <?php print drupal_render($rows); ?>
   </div>
 </div>
