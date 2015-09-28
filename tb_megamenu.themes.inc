@@ -79,16 +79,6 @@ function template_preprocess_tb_megamenu(&$vars) {
   }
 }
 
-function _set_default_theme_tb_megamenu_item(&$vars) {
-  $items = &$vars['items'];
-  for ($i = 0; $i < count($items); $i++) {
-    $items[$i]['theme'] = array(
-      'theme_name' => 'tb_megamenu_item',
-      'variables' => array()
-    );
-  }
-}
-
 function template_preprocess_tb_megamenu_nav(&$vars) {
   $level = $vars['level'];
   $items = $vars['items'];
@@ -440,11 +430,8 @@ function template_preprocess_tb_megamenu_block(&$vars) {
       }
       $vars['content'] = array(
         '#theme' => 'block',
-        '#elements' => array(
-          'content' => $block_content['content'],
-          '#children' => (is_array($block_content['content']) ? drupal_render($block_content['content']) : $block_content['content']),
-          '#block' => $block
-        )
+        '#children' => (is_array($block_content['content']) ? drupal_render($block_content['content']) : $block_content['content']),
+        '#block' => $block
       );
     }
     else {
