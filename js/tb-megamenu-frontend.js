@@ -3,7 +3,7 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
 (function ($) {
   Drupal.TBMegaMenu.oldWindowWidth = 0;
   Drupal.TBMegaMenu.displayedMenuMobile = false;
-  Drupal.TBMegaMenu.supportedScreens = [980];
+  Drupal.TBMegaMenu.supportedScreens = [630];
   Drupal.TBMegaMenu.menuResponsive = function () {
     var windowWidth = window.innerWidth ? window.innerWidth : $(window).width();
     var navCollapse = $('.tb-megamenu').children('.nav-collapse');
