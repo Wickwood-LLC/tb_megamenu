@@ -2688,7 +2688,3 @@
     overflow: visible !important;
   }
 }
-.tb-megamenu .nav-collapse {
-  height: 0;
-  overflow: hidden;
-}
