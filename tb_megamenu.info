@@ -1,5 +1,5 @@
 name = TB Mega Menu
-description = This a module is patched by WWM to change the breakpoint based on comments at https://www.drupal.org/node/2050431#comment-8519531
+description = Megamenu solutions for Drupal. This a module is patched by WWM to change the breakpoint based on comments at https://www.drupal.org/node/2050431#comment-8519531
 package = Menu
 version = 7.x-1.0-rc2-wwm
 core = 7.x
