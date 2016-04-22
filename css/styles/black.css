@@ -149,7 +149,7 @@
   border-top: 0;
 }
 
-@media (max-width: 979px) {
+@media (max-width: 629px) {
 .tb-megamenu.style-black {
   background-image: none;
   background-color: inherit;
@@ -171,7 +171,7 @@
 }
 }
 
-@media (max-width: 738px) {
+@media (max-width: 629px) {
   .tb-megamenu.style-black .nav-collapse .nav li a {
 	 border-top-color: #444;
   }
