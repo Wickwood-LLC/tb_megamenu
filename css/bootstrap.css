@@ -2682,7 +2682,7 @@
     padding-right: 10px;
   }
 }
-@media (min-width: 630px) {
+@media (min-width: 480px) {
 .tb-megamenu .nav-collapse.collapse {
     height: auto !important;
     overflow: visible !important;
