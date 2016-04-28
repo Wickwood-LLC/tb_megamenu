@@ -848,7 +848,7 @@
 	outline-offset: -2px;
 }
 
-@media (max-width: 489px) {
+@media (max-width: 499px) {
 .tb-megamenu .navbar .brand {
 		font-size: 13px;
 	}
@@ -942,7 +942,7 @@
 		width: 230px !important;
 	}
 }
-@media (max-width: 489px) {
+@media (max-width: 499px) {
 .tb-megamenu .navbar .brand {
 		margin-top: 2px;
 	}
