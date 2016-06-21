@@ -5,11 +5,12 @@ Drupal.TBMegaMenu = Drupal.TBMegaMenu || {};
   Drupal.behaviors.tbMegaMenuAction = {
     attach: function(context) {
       $('.tb-megamenu-button').click(function() {
+        $(this).parent().children('.nav-collapse').toggle();
         if(parseInt($(this).parent().children('.nav-collapse').height())) {
-          $(this).parent().children('.nav-collapse').css({height: 0, overflow: 'hidden'});
+          $(this).parent().children('.nav-collapse').css({height: 0, overflow: 'hidden', display: 'none'});
         }
         else {
-          $(this).parent().children('.nav-collapse').css({height: 'auto', overflow: 'visible'});
+          $(this).parent().children('.nav-collapse').css({height: 'auto', overflow: 'visible', display: 'block'});
         }
       });
       var isTouch = 'ontouchstart' in window && !(/hp-tablet/gi).test(navigator.appVersion);

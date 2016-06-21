@@ -1685,6 +1685,7 @@
   width: auto;
 }
 .tb-megamenu .nav-collapse.collapse {
+  display: block;
   height: auto;
   overflow: visible;
 }
@@ -3155,6 +3156,7 @@
 }
 @media (min-width: 980px) {
 .tb-megamenu .nav-collapse.collapse {
+    display: block !important;
     height: auto !important;
     overflow: visible !important;
   }
